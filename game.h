@@ -26,11 +26,11 @@ void initialize(Queue *q){
 int add_answer(Queue *q, int jawaban_random){
 	if (q->count < 20){// maximum flashing
 	Node *tmp;
-	tmp = (Node*)malloc(sizeof(Node));
+	tmp = malloc(sizeof(Node));
 	tmp->jawaban = jawaban_random;
 	tmp->next = NULL;
 	
-	if(q->rear == NULL){
+	if(q->rear != NULL){
 		q->rear->next = tmp;
 		q->rear = tmp;
 		q->count++;
@@ -49,8 +49,9 @@ int delete_answer(Queue *q){
 	return(n);
 }
 void game_difficulty(int difficulty, size_t *num_of_colors, size_t *reaction_time);
-void color_flash(size_t round_flashes, size_t num_of_colors, size_t reaction_time);
-void play(int difficulty, size_t num_of_colors, size_t reaction_time);
+void color_flash(size_t round_flashes, size_t num_of_colors, size_t reaction_time,Queue *q);
+void play(int difficulty, size_t num_of_colors, size_t reaction_time,Queue *q);
+void tampil_jawaban_q(Node *head);
 // void input_answer(int difficulty); 		<- ANDIN'S CODE
 
 int game(){    
@@ -76,6 +77,10 @@ int game(){
     	- HARD 550000 + BASE_REACTION_TIME & 4
     	- INSANE 400000 + BASE_REACTION_TIME & 5
     */
+    
+    Queue *q;
+    q = malloc(sizeof(Queue));
+    initialize(q);
     srand(time(NULL));
     
 	int difficulty;
@@ -99,7 +104,7 @@ int game(){
     game_difficulty(difficulty, &num_of_colors, &reaction_time);
     
     // COMMENCING GAME
-    play(difficulty, num_of_colors, reaction_time);
+    play(difficulty, num_of_colors, reaction_time,q);
     
     return 0;
 }
@@ -125,7 +130,7 @@ void game_difficulty(int difficulty, size_t *num_of_colors, size_t *reaction_tim
 	}
 }
 
-void color_flash(size_t round_flashes, size_t num_of_colors, size_t reaction_time){
+void color_flash(size_t round_flashes, size_t num_of_colors, size_t reaction_time,Queue *q){
 	int prevColor = -1, currentColor = -1;
 	
 	// RANDOMIZE COLOR WITHOUT USING PARALLEL PROGRAMMING
@@ -134,6 +139,7 @@ void color_flash(size_t round_flashes, size_t num_of_colors, size_t reaction_tim
 			currentColor = rand() % num_of_colors;
 	
 		prevColor = currentColor;
+		add_answer(q,currentColor);
 		
 		system("cls");
 		switch(currentColor){
@@ -167,7 +173,7 @@ void color_flash(size_t round_flashes, size_t num_of_colors, size_t reaction_tim
 	}while(round_flashes != 0);
 }
 
-void play(int difficulty, size_t num_of_colors, size_t reaction_time){
+void play(int difficulty, size_t num_of_colors, size_t reaction_time,Queue *q){
 	size_t round_flashes = 3, round_counter = 1, status = 1; // <- GAME'S STATUS (CORRECT GUESS OR WRONG GUESS)
 	char diff[6];
 	
@@ -187,16 +193,35 @@ void play(int difficulty, size_t num_of_colors, size_t reaction_time){
 		getchar();		// ADDED FFLUSH FOR INPUT CONSISTENCY
 		fflush(stdin);
 		
-		color_flash(round_flashes, num_of_colors, reaction_time);
+		color_flash(round_flashes, num_of_colors, reaction_time,q);
 		round_counter++;
 		round_flashes++;
 		
-		// input_answer(difficulty); 		<- ANDIN'S CODE
+		tampil_jawaban_q(q->front);//debug aja, nanti dihapus
+		
+		// input_answer(difficulty,q); 		<- ANDIN'S CODE
 	}
 }
 
+void tampil_jawaban_q(Node *head)
+{
+	Node *tmp;
+	tmp = head;
+    if(head->next == NULL)
+    {
+        printf("NULL\n");
+    }
+    else
+    {
+    	while(tmp != NULL){
+    		printf("%d", tmp->jawaban);
+    		tmp = tmp->next;
+		}
+    }
+}
+
 /*
-void input_answer(int difficulty){ 
+void input_answer(int difficulty,Queue *q){ 
 	int guess;
 	system("color 06"); // BLACK BACKGROUND YELLOW FOREGROUND
 	printf("\nRED = 0");
