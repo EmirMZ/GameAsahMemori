@@ -1,5 +1,49 @@
-#include <stdio.h>
+struct node{
+	int jawaban;
+	struct node *next;
+};
+typedef struct node node;
 
+struct queue{
+	int count;
+	node *rear;
+	node *front;
+};
+typedef struct queue queue;
+
+void initialize(queue *q){
+    q->count = 0;
+    q->rear = NULL;
+    q->front = NULL;
+}
+
+int add_answer(queue *q, int jawaban_random){
+	if (q->count < 20){// maximum flashing
+	node *tmp;
+	tmp = malloc(sizeof (node) );
+	tmp->jawaban = jawaban_random;
+	tmp->next = NULL;
+	
+	if(q->rear == NULL){
+		q->rear->next = tmp;
+		q->rear = tmp;
+		q->count++;
+	}else{
+		q->front = q->rear = tmp;
+		}
+	}else if (q->count > 20){
+		printf("error, queue jawaban full, tetapi malah diusahakan dimasukkan.");
+	}
+	
+}
+
+int delete_answer(queue *q){
+	int n = q->front->jawaban;
+	q->front = q->front->next;
+	q->count--;
+	return(n);
+	
+}
 
 
 void game_difficulty(int difficulty, int *num_of_colors, int *reaction_time);
