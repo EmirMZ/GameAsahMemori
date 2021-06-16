@@ -26,7 +26,7 @@ void initialize(Queue *q){
 int add_answer(Queue *q, int jawaban_random){
 	if (q->count < 20){// maximum flashing
 	Node *tmp;
-	tmp = malloc(sizeof(Node));
+	tmp = (Node*)malloc(sizeof(Node));
 	tmp->jawaban = jawaban_random;
 	tmp->next = NULL;
 	
@@ -79,7 +79,7 @@ int game(){
     */
     
     Queue *q;
-    q = malloc(sizeof(Queue));
+    q = (Queue*)malloc(sizeof(Queue));
     initialize(q);
     srand(time(NULL));
     
