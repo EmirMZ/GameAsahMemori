@@ -1,13 +1,12 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <time.h>
+
+
 
 void game_difficulty(int difficulty, int *num_of_colors, int *reaction_time);
 void color_flash(int round_flashes, int num_of_colors, int reaction_time);
 void play();
 
-int main(){    
+int game(){    
     /*
     	SYSTEM("COLOR XX") FORMAT:
     	- FIRST DIGIT = BACKGROUND COLOR
@@ -31,13 +30,10 @@ int main(){
     	- INSANE 200000 & 5
     */
     srand(time(NULL));
-	int difficulty, i, color, num_of_colors, reaction_time;
+    
+	int difficulty, num_of_colors, reaction_time;
 	
-	printf("\nChoose the difficulty:\n");
-    printf("1. Easy - 0.85s reaction time w/ 3 colors\n");
-    printf("2. Normal - 0.6s reaction time w/ 4 colors\n");
-    printf("3. Hard - 0.35s reaction time w/ 4 colors\n");
-    printf("4. Insane - 0.2s reaction time w/ 5 colors");
+
     
     // Error handling
 	do{
