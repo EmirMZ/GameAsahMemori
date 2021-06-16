@@ -2,6 +2,10 @@ void red () {
   printf("\033[1;31m");
 }
 
+void green () {
+  printf("\033[0;32m");
+}
+
 void yellow () {
   printf("\033[0;35m");
 }
@@ -12,17 +16,17 @@ void reset () {
 
 
 int menu(){
-
+	system("cls");
 	red ();
     printf("test");
     reset ();
 
 	while(1){
-		if (getch() == 224){
+		if (getch() == 224){ //224 is Escape
     	switch(getch()) {
     		case 72:
     			system("cls");
-    			yellow ();
+    			green ();
     			printf("up arrow");
     			reset ();
 				break;
