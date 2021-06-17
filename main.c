@@ -8,4 +8,5 @@
 int main(){
 	//menu();
 	game();
+	
 }

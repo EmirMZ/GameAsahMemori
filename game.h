@@ -4,55 +4,50 @@
 #include <time.h>
 #define BASE_REACTION_TIME 300000 // <-- MODIFY THIS INSTEAD IF A CHANGE OF REACTION TIME IS NEEDED (VALUE IS IN MICROSECONDS)
 
-struct node{
-	int jawaban;
-	struct node *next;
-};
-typedef struct node Node;
+struct Node{
+    int answer;
+    struct Node* next;
+} *rear, *front;
+typedef struct Node Node;
 
-struct queue{
-	int count;
-	Node *rear;
-	Node *front;
-};
-typedef struct queue Queue;
-
-void initialize(Queue *q){
-    q->count = 0;
-    q->rear = NULL;
-    q->front = NULL;
+void free_answer(){
+    struct Node *var = rear;
+    while(var!=NULL){
+        struct Node* buf=var->next;
+		free(var);
+		var = buf;
+    }
 }
 
-int add_answer(Queue *q, int jawaban_random){
-	if (q->count < 20){// maximum flashing
-	Node *tmp;
-	tmp = (Node*)malloc(sizeof(Node));
-	tmp->jawaban = jawaban_random;
-	tmp->next = NULL;
-	
-	if(q->rear != NULL){
-		q->rear->next = tmp;
-		q->rear = tmp;
-		q->count++;
-	}else{
-		q->front = q->rear = tmp;
-		}
-	}else if (q->count > 20){
-		printf("error, queue jawaban full, tetapi malah diusahakan dimasukkan.");
-	}
+void add_answer(int random_answer){
+    Node *temp;
+    temp = (Node*)malloc(sizeof(Node));
+    temp->answer = random_answer;
+    if (front == NULL){
+        front = temp;
+        front->next = NULL;
+        rear = front;
+    }else{
+        front->next = temp;
+        front = temp;
+        front->next = NULL;
+    }
 }
 
-int delete_answer(Queue *q){
-	int n = q->front->jawaban;
-	q->front = q->front->next;
-	q->count--;
-	return(n);
+void display_answer(){
+    struct Node *var = rear;
+    if(var!=NULL){
+        while(var!=NULL){
+            printf("%d",var->answer);
+            var=var->next;
+        }
+    }
 }
-void game_difficulty(int difficulty, size_t *num_of_colors, size_t *reaction_time);
-void color_flash(size_t round_flashes, size_t num_of_colors, size_t reaction_time,Queue *q);
-void play(int difficulty, size_t num_of_colors, size_t reaction_time,Queue *q);
-void tampil_jawaban_q(Node *head);
-// void input_answer(int difficulty); 		<- ANDIN'S CODE
+
+void game_difficulty(int difficulty, int *num_of_colors, int *reaction_time);
+void play(int difficulty, int num_of_colors, int reaction_time);
+void color_flash(int round_flashes, int num_of_colors, int reaction_time);
+void display_answer();
 
 int game(){    
     /*
@@ -78,13 +73,8 @@ int game(){
     	- INSANE 400000 + BASE_REACTION_TIME & 5
     */
     
-    Queue *q;
-    q = (Queue*)malloc(sizeof(Queue));
-    initialize(q);
     srand(time(NULL));
-    
-	int difficulty;
-	size_t num_of_colors, reaction_time;
+	int difficulty, num_of_colors, reaction_time;
 	
 	/*
 	printf("\nChoose the difficulty:\n");
@@ -99,17 +89,17 @@ int game(){
 		printf("\n? ");
 	    scanf("%d", &difficulty);
 	}while(difficulty < 1 || difficulty > 4);
-    
+
     // SETTING UP GAME DIFFICULTY
     game_difficulty(difficulty, &num_of_colors, &reaction_time);
-    
+
     // COMMENCING GAME
-    play(difficulty, num_of_colors, reaction_time,q);
+    play(difficulty, num_of_colors, reaction_time);
     
     return 0;
 }
 
-void game_difficulty(int difficulty, size_t *num_of_colors, size_t *reaction_time){
+void game_difficulty(int difficulty, int *num_of_colors, int *reaction_time){
 	switch(difficulty){
     	case 1:
     		*num_of_colors = 3;
@@ -130,7 +120,7 @@ void game_difficulty(int difficulty, size_t *num_of_colors, size_t *reaction_tim
 	}
 }
 
-void color_flash(size_t round_flashes, size_t num_of_colors, size_t reaction_time,Queue *q){
+void color_flash(int round_flashes, int num_of_colors, int reaction_time){
 	int prevColor = -1, currentColor = -1;
 	
 	// RANDOMIZE COLOR WITHOUT USING PARALLEL PROGRAMMING
@@ -139,7 +129,7 @@ void color_flash(size_t round_flashes, size_t num_of_colors, size_t reaction_tim
 			currentColor = rand() % num_of_colors;
 	
 		prevColor = currentColor;
-		add_answer(q,currentColor);
+		add_answer(currentColor);
 		
 		system("cls");
 		switch(currentColor){
@@ -173,8 +163,8 @@ void color_flash(size_t round_flashes, size_t num_of_colors, size_t reaction_tim
 	}while(round_flashes != 0);
 }
 
-void play(int difficulty, size_t num_of_colors, size_t reaction_time,Queue *q){
-	size_t round_flashes = 3, round_counter = 1, status = 1; // <- GAME'S STATUS (CORRECT GUESS OR WRONG GUESS)
+void play(int difficulty, int num_of_colors, int reaction_time){
+	int round_flashes = 3, round_counter = 1, status = 1; // <- GAME'S STATUS (CORRECT GUESS OR WRONG GUESS)
 	char diff[6];
 	
 	if(difficulty == 1) strcpy(diff, "EASY");
@@ -184,53 +174,19 @@ void play(int difficulty, size_t num_of_colors, size_t reaction_time,Queue *q){
 	
 	// STATE OF PLAY
 	while(status == 1){
+		if(round_counter != 1) free_answer(); // DELETE ANSWER AFTER EACH ROUND
 		system("color 06"); // BLACK BACKGROUND YELLOW FOREGROUND
-		printf("\n\t\t\t\t\tROUND %u - %s\n", round_counter, diff);
+		printf("\n\t\t\t\t\tROUND %d - %s\n", round_counter, diff);
 		printf("\t\t\t\t\t    %d Flashes\n", round_flashes);
 		printf("\n\t\t\t      Press the ENTER key when ready to start...");
 		
 		fflush(stdin);
-		getchar();		// ADDED FFLUSH FOR INPUT CONSISTENCY
+		getchar();
 		fflush(stdin);
 		
-		color_flash(round_flashes, num_of_colors, reaction_time,q);
+		color_flash(round_flashes, num_of_colors, reaction_time);
 		round_counter++;
 		round_flashes++;
-		
-		tampil_jawaban_q(q->front);//debug aja, nanti dihapus
-		
-		// input_answer(difficulty,q); 		<- ANDIN'S CODE
+		display_answer();
 	}
 }
-
-void tampil_jawaban_q(Node *head)
-{
-	Node *tmp;
-	tmp = head;
-    if(head->next == NULL)
-    {
-        printf("NULL\n");
-    }
-    else
-    {
-    	while(tmp != NULL){
-    		printf("%d", tmp->jawaban);
-    		tmp = tmp->next;
-		}
-    }
-}
-
-/*
-void input_answer(int difficulty,Queue *q){ 
-	int guess;
-	system("color 06"); // BLACK BACKGROUND YELLOW FOREGROUND
-	printf("\nRED = 0");
-	printf("\nBLUE = 1");
-	printf("\nGREEN = 2");									<- ANDIN'S CODE (FOR INSPIRATION PURPOSES, EDITS ARE SUPER WELCOME)
-	if(difficulty >= 2) printf("\nYELLOW = 3");;				
-	if(difficulty == 4) printf("\nPURPLE = 4");
-	
-	printf("\nEnter the order: ");
-	scanf("%d", &guess);
-}
-*/
