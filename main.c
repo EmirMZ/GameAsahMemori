@@ -8,26 +8,30 @@
 
 int main(){
 	//enableVT();
-	//menu(0);
 	//game();
+	int uyey = menu(0);
+	char str[60];
 	
-	int num;
-    FILE *fptr;
-    
-    fptr = fopen("program.txt","w+");
-	
-	if(fptr == NULL)
+	char *filename = "program.txt";
+    FILE *fp = fopen(filename, "w+");
+
+    if (fp == NULL)
     {
-      printf("Error!");   
-      exit(1);             
+        printf("Error: could not open file %s", filename);
+        return 1;
     }
+
+    // read one character at a time and
+    // display it to the output
+    fprintf(fp,"%d",uyey);
     
-     printf("Enter num: ");
-   scanf("%d",&num);
+       if( fgets (str, 60, fp)!=NULL ) {
+      /* writing content to stdout */
+       printf("%s", str);
+   }
 
-   fprintf(fptr,"%d",num);
-   printf("Value of n= %d", num);
-   
-   fclose(fptr);
 
+    // close the file
+    fclose(fp);
 }
+

@@ -34,9 +34,7 @@ void menuMain (int selected,int menu_select, int menu_total_string,char menu [9]
 
 
 int menu(int menu_select){
-    int selection = 1, i = 1;
-    
-    
+    int selection = 1, i = 1, selected_menu = 0;
     
     int menu_limit[9];
 	
@@ -54,31 +52,23 @@ int menu(int menu_select){
 	strcpy (menu[1][2], "Play");
 	strcpy (menu[1][3], "Play");
 
-	while(1){
+	while(selected_menu == 0){
 		system("cls");
 		menuMain(selection,menu_select,menu_limit[menu_select],menu);
-		
-		/*switch(getch()) {
-			case 224 :
-				switch (getch()){
-					case 72:
-    		        	selection --;
-				    	break;
-		    		case 80:
-			    		selection ++;
-				    	break;
+
+    	switch(getch()){
+			case 224: // anon
+				switch(getch()){
+					case 72: // Up Arrow
+						selection --;
+						break;
+					case 80: // Up Arrow
+						selection ++;
+						break;
 				}
-			case 13 :
-		}*/
-		
-		if (getch() == 224 || getch() == 13){ //224 is Escape
-    	switch(getch()) {
-    		case 72:
-    			selection --;
 				break;
-			case 80:
-				selection ++;
-				break;
+			case 13:
+				selected_menu = selection;
 		}
 		
 		if (selection < 0){
@@ -87,10 +77,6 @@ int menu(int menu_select){
 		else if (selection+1 > menu_limit[menu_select]){
 			selection = 0;
 		}
-		
-		
-	}    
-    
-
 	}
-}
+	return selected_menu;    
+	}
