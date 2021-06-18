@@ -2,34 +2,43 @@
 #include <stdlib.h>
 #include <strings.h>
 #include <windows.h>
-#include <omp.h>
 #include "menu.h"
 #include "game.h"
 
 
 int main(){
 	//enableVT();
-	//menu(0);
-	game();
-	/*
-	int num;
-    FILE *fptr;
-    
-    fptr = fopen("program.txt","w+");
+	//game();
+	int uyey = menu(0);
 	
-	if(fptr == NULL)
+	char str[60];
+	
+	char *filename = "program.txt";
+    FILE *fp;
+	fp = fopen(filename, "r+");
+
+    if (fp == NULL)
     {
-      printf("Error!");   
-      exit(1);             
+        printf("Error: could not open file %s", filename);
+        return 1;
     }
+
+    // read one character at a time and
+    // display it to the output
     
-     printf("Enter num: ");
-   scanf("%d",&num);
+	
+	
+	
+	fprintf(fp,"%d",uyey);
+    
+   		 fseek( fp, 0, SEEK_SET );
+       if(fgets(str, 32, fp) != NULL ) {
+      /* writing content to stdout */
+       puts(str);
+   }
 
-   fprintf(fptr,"%d",num);
-   printf("Value of n= %d", num);
-   
-   fclose(fptr);
-   */
-
+	
+    // close the file
+    fclose(fp);
 }
+
