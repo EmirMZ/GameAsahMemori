@@ -4,7 +4,7 @@
 #include <windows.h>
 
 void red () {
-  printf("\033[1;31m");
+  printf("\033[1;7;31m");
 }
 
 void green () {
@@ -19,63 +19,63 @@ void reset () {
   printf("\033[0m");
 }
 
-void menuMain (int selected){
+void menuMain (int selected,int menu_select, int menu_total_string,char menu [9][5][32]){
 	int i;
-	char menu [9][5][32];
+	for (i = 0; i < menu_total_string; i++)
+	{
+		if (selected == i)
+		{
+			red();
+		}
+		printf("%s\n", menu[menu_select][i]);
+		reset();
+	}
+}
+
+
+int menu(int menu_select){
+    int selection = 1, i = 1;
+    
+    
+    
+    int menu_limit[9];
+	
+	menu_limit[0] = 4; //limit option main menu
+	
+	char menu [9][5][32];// bracket pertama adalah menu window, bracket kedua adalah menu string, bracket ketiga character limit
+
+	
 	strcpy (menu[0][0], "Play");
 	strcpy (menu[0][1], "Help");
 	strcpy (menu[0][2], "Score");
 	strcpy (menu[0][3], "Exit");
 	strcpy (menu[1][0], "Play");
-	strcpy (menu[1][0], "Play");
-	strcpy (menu[1][0], "Play");
-	strcpy (menu[0][0], "Play");
-	
-	for (i = 0; i < 5; i++)
-	{
-		if (selected == i)
-		{
-			red();
-			printf("%s\n", menu[0][i]);
-			reset();
-		}
-		else
-		{
-			printf("%s\n", menu[0][i]);
-		}
-	}
-}
-
-
-int menu(){
-	system("cls");
-	red ();
-    printf("test");
-    reset ();
-    int selection, i = 1;
+	strcpy (menu[1][1], "Play");
+	strcpy (menu[1][2], "Play");
+	strcpy (menu[1][3], "Play");
 
 	while(1){
-		if (selection == 5){
-			selection = 1;
-		}
-		else if (selection < 1){
-			selection = 5;
-		}
+		system("cls");
+		menuMain(selection,menu_select,menu_limit[menu_select],menu);
+		
 		if (getch() == 224){ //224 is Escape
     	switch(getch()) {
     		case 72:
-    			system("cls");
     			selection --;
 				break;
 			case 80:
-				system("cls");
 				selection ++;
-				break;
-			default :
 				break;
 		}
 		
-		menuMain(selection);
+		if (selection < 0){
+			selection = menu_limit[menu_select]-1;
+		}
+		else if (selection+1 > menu_limit[menu_select]){
+			selection = 0;
+		}
+		
+		
 	}    
     
 
