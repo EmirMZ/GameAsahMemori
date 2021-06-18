@@ -10,10 +10,12 @@ int main(){
 	//enableVT();
 	//game();
 	int uyey = menu(0);
+	
 	char str[60];
 	
 	char *filename = "program.txt";
-    FILE *fp = fopen(filename, "w+");
+    FILE *fp;
+	fp = fopen(filename, "r+");
 
     if (fp == NULL)
     {
@@ -23,14 +25,19 @@ int main(){
 
     // read one character at a time and
     // display it to the output
-    fprintf(fp,"%d",uyey);
     
-       if( fgets (str, 60, fp)!=NULL ) {
+	
+	
+	
+	fprintf(fp,"%d",uyey);
+    
+   		 fseek( fp, 0, SEEK_SET );
+       if(fgets(str, 32, fp) != NULL ) {
       /* writing content to stdout */
-       printf("%s", str);
+       puts(str);
    }
 
-
+	
     // close the file
     fclose(fp);
 }
