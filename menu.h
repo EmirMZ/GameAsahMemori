@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <strings.h>
 #include <windows.h>
+#include <omp.h>
 
 void red () {
   printf("\033[1;7;31m");
@@ -21,6 +22,7 @@ void reset () {
 
 void menuMain (int selected,int menu_select, int menu_total_string,char menu [9][5][32]){
 	int i;
+	
 	for (i = 0; i < menu_total_string; i++)
 	{
 		if (selected == i)
@@ -29,7 +31,9 @@ void menuMain (int selected,int menu_select, int menu_total_string,char menu [9]
 		}
 		printf("%s\n", menu[menu_select][i]);
 		reset();
+		
 	}
+	
 }
 
 
@@ -42,7 +46,7 @@ int menu(int menu_select){
 	
 	char menu [9][5][32];// bracket pertama adalah menu window, bracket kedua adalah menu string, bracket ketiga character limit
 
-	
+
 	strcpy (menu[0][0], "Play");
 	strcpy (menu[0][1], "Help");
 	strcpy (menu[0][2], "Score");
@@ -50,7 +54,9 @@ int menu(int menu_select){
 	strcpy (menu[1][0], "Play");
 	strcpy (menu[1][1], "Play");
 	strcpy (menu[1][2], "Play");
-	strcpy (menu[1][3], "Play");
+	strcpy (menu[1][3], "Play");	
+	
+
 
 	while(selected_menu == 0){
 		system("cls");
