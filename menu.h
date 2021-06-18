@@ -58,7 +58,20 @@ int menu(int menu_select){
 		system("cls");
 		menuMain(selection,menu_select,menu_limit[menu_select],menu);
 		
-		if (getch() == 224){ //224 is Escape
+		/*switch(getch()) {
+			case 224 :
+				switch (getch()){
+					case 72:
+    		        	selection --;
+				    	break;
+		    		case 80:
+			    		selection ++;
+				    	break;
+				}
+			case 13 :
+		}*/
+		
+		if (getch() == 224 || getch() == 13){ //224 is Escape
     	switch(getch()) {
     		case 72:
     			selection --;
