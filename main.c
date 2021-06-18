@@ -4,7 +4,7 @@
 #include <windows.h>
 #include "menu.h"
 #include "game.h"
-#include "enableVT.h"
+
 
 int main(){
 	//enableVT();
