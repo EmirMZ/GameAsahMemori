@@ -7,7 +7,7 @@
 #include "enableVT.h"
 
 int main(){
-	enableVT();
-	menu();
+	//enableVT();
+	menu(0);
 	//game();
 }
