@@ -2,7 +2,13 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <time.h>
-#define BASE_REACTION_TIME 300000 // <-- MODIFY THIS INSTEAD IF A CHANGE OF REACTION TIME IS NEEDED (VALUE IS IN MICROSECONDS)
+#include <omp.h>
+#include <windows.h>
+#define DO 523.25
+#define RE 587.33
+#define MI 659.25
+#define FA 698.46
+#define SOL 783.99
 
 struct Node{
     int answer;
@@ -11,9 +17,9 @@ struct Node{
 typedef struct Node Node;
 
 void free_answer(){
-    struct Node *var = rear;
+    struct Node* var = rear;
     while(var!=NULL){
-        struct Node* buf=var->next;
+        struct Node* buf = var->next;
 		free(var);
 		var = buf;
     }
@@ -36,10 +42,10 @@ void add_answer(int random_answer){
 
 void display_answer(){
     struct Node *var = rear;
-    if(var!=NULL){
-        while(var!=NULL){
-            printf("%d",var->answer);
-            var=var->next;
+    if(var != NULL){
+        while(var != NULL){
+            printf("%d", var->answer);
+            var = var->next;
         }
     }
 }
@@ -61,10 +67,9 @@ int game(){
     	- BLACK 0
     	- BLUE 1
     	- GREEN 2
+    	- AQUA 3
     	- RED 4
     	- PURPLE 5
-    	- YELLOW 6
-    	
     	
     	REACTION TIMES (in microseconds) AND COLORS:
     	- EASY 900000 + BASE_REACTION_TIME & 3
@@ -76,13 +81,13 @@ int game(){
     srand(time(NULL));
 	int difficulty, num_of_colors, reaction_time;
 	
-	/*
+	
 	printf("\nChoose the difficulty:\n");
-    printf("1. EASY - 1.25s Reaction Time w/ 3 Colors\n");
-    printf("2. NORMAL - 1.00s Reaction Time w/ 4 Colors\n");
-    printf("3. HARD - 0.75s Reaction Time w/ 4 Colors\n");
-    printf("4. INSANE - 0.60s Reaction Time w/ 5 Colors");
-	*/
+    printf("1. EASY - 1.24s Reaction Time w/ 3 Colors\n");
+    printf("2. NORMAL - 0.98s Reaction Time w/ 4 Colors\n");
+    printf("3. HARD - 0.68s Reaction Time w/ 4 Colors\n");
+    printf("4. INSANE - 0.40s Reaction Time w/ 5 Colors");
+	
 	
     // ERROR HANDLING
 	do{
@@ -90,9 +95,9 @@ int game(){
 	    scanf("%d", &difficulty);
 	}while(difficulty < 1 || difficulty > 4);
 
-    // SETTING UP GAME DIFFICULTY
+    // SETTING UP GAME BY THE SELECTED DIFFICULTY
     game_difficulty(difficulty, &num_of_colors, &reaction_time);
-
+	
     // COMMENCING GAME
     play(difficulty, num_of_colors, reaction_time);
     
@@ -103,59 +108,59 @@ void game_difficulty(int difficulty, int *num_of_colors, int *reaction_time){
 	switch(difficulty){
     	case 1:
     		*num_of_colors = 3;
-    		*reaction_time = 900000;
+    		*reaction_time = 620000;
     		break;
     	case 2:
     		*num_of_colors = 4;
-    		*reaction_time = 750000;
+    		*reaction_time = 490000;
     		break;
     	case 3:
     		*num_of_colors = 4;
-    		*reaction_time = 550000;
+    		*reaction_time = 340000;
     		break;
     	case 4:
     		*num_of_colors = 5;
-    		*reaction_time = 400000;
+    		*reaction_time = 200000;
     		break;
 	}
 }
 
 void color_flash(int round_flashes, int num_of_colors, int reaction_time){
-	int prevColor = -1, currentColor = -1;
+	int prev_color = -1, current_color = -1;
 	
 	// RANDOMIZE COLOR WITHOUT USING PARALLEL PROGRAMMING
 	do{
-		while(prevColor == currentColor)
-			currentColor = rand() % num_of_colors;
+		while(prev_color == current_color)
+			current_color = rand() % num_of_colors;
 	
-		prevColor = currentColor;
-		add_answer(currentColor);
+		prev_color = current_color;
+		add_answer(current_color);
 		
-		system("cls");
-		switch(currentColor){
-			case 0: // RED
-				system("color 40");
-				usleep(BASE_REACTION_TIME);
-				usleep(reaction_time);
-				break;
-			case 1: // BLUE
+		// COLOR FLASH TIME !!
+		switch(current_color){
+			case 0: //BLUE
 				system("color 10");
-				usleep(BASE_REACTION_TIME);
+				Beep(DO, reaction_time / 1000);
 				usleep(reaction_time);
 				break;
-			case 2: // GREEN
+			case 1: // GREEN
 				system("color 20");
-				usleep(BASE_REACTION_TIME);
+				Beep(RE, reaction_time / 1000);
 				usleep(reaction_time);
 				break;
-			case 3: // YELLOW
-				system("color 60");
-				usleep(BASE_REACTION_TIME);
+			case 2: // AQUA
+				system("color 30");
+				Beep(MI, reaction_time / 1000);
+				usleep(reaction_time);
+				break;
+			case 3: // RED
+				system("color 40");
+				Beep(FA, reaction_time / 1000);
 				usleep(reaction_time);
 				break;
 			case 4: // PURPLE
 				system("color 50");
-				usleep(BASE_REACTION_TIME);
+				Beep(SOL, reaction_time / 1000);
 				usleep(reaction_time);
 				break;	
 		}
@@ -174,16 +179,29 @@ void play(int difficulty, int num_of_colors, int reaction_time){
 	
 	// STATE OF PLAY
 	while(status == 1){
+		if(round_counter % 5 == 0){
+			/* <-- This won't work
+			#pragma omp parallel
+			{
+				//#pragma omp single
+				//{
+				printf("\n\t\t     CONGRATS ON REACHING LEVEL 5 !!! - FROM THREAD %d OF %d", omp_get_thread_num(), omp_get_num_threads());
+				//}
+			}
+			*/
+			printf("\n\t\t\t            Keep up the good work !!\n");
+		}
+		
 		if(round_counter != 1) free_answer(); // DELETE ANSWER AFTER EACH ROUND
+		
 		system("color 06"); // BLACK BACKGROUND YELLOW FOREGROUND
 		printf("\n\t\t\t\t\tROUND %d - %s\n", round_counter, diff);
 		printf("\t\t\t\t\t    %d Flashes\n", round_flashes);
 		printf("\n\t\t\t      Press the ENTER key when ready to start...");
 		
-		fflush(stdin);
 		getchar();
-		fflush(stdin);
 		
+		system("cls");
 		color_flash(round_flashes, num_of_colors, reaction_time);
 		round_counter++;
 		round_flashes++;

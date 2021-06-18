@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <strings.h>
 #include <windows.h>
+#include <omp.h>
 #include "menu.h"
 #include "game.h"
 
@@ -9,8 +10,8 @@
 int main(){
 	//enableVT();
 	//menu(0);
-	//game();
-	
+	game();
+	/*
 	int num;
     FILE *fptr;
     
@@ -29,5 +30,6 @@ int main(){
    printf("Value of n= %d", num);
    
    fclose(fptr);
+   */
 
 }
