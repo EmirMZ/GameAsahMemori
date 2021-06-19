@@ -4,12 +4,15 @@
 #include <windows.h>
 #include "menu.h"
 #include "game.h"
+#include "help.h"
 
 
 int main(){
 	//enableVT();
 	game();
-	int uyey = menu(0);
+	//help();
+	//menu(0);
+	/*int uyey = menu(0);
 	
 	char str[60];
 	
@@ -33,12 +36,12 @@ int main(){
     
    		 fseek( fp, 0, SEEK_SET );
        if(fgets(str, 32, fp) != NULL ) {
-      /* writing content to stdout */
+      //writing content to stdout
        puts(str);
    }
 
 	
     // close the file
-    fclose(fp);
+    fclose(fp);*/
 }
 
