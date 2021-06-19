@@ -8,7 +8,7 @@
 
 int main(){
 	//enableVT();
-	//game();
+	game();
 	int uyey = menu(0);
 	
 	char str[60];

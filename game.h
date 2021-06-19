@@ -4,11 +4,7 @@
 #include <time.h>
 #include <omp.h>
 #include <windows.h>
-#define DO 523.25
-#define RE 587.33
-#define MI 659.25
-#define FA 698.46
-#define SOL 783.99
+#include "soundtracks.h"
 
 struct Node{
     int answer;
@@ -23,6 +19,8 @@ void free_answer(){
 		free(var);
 		var = buf;
     }
+    rear = NULL;
+    front = NULL;
 }
 
 void add_answer(int random_answer){
@@ -53,7 +51,6 @@ void display_answer(){
 void game_difficulty(int difficulty, int *num_of_colors, int *reaction_time);
 void play(int difficulty, int num_of_colors, int reaction_time);
 void color_flash(int round_flashes, int num_of_colors, int reaction_time);
-void display_answer();
 
 int game(){    
     /*
@@ -81,13 +78,11 @@ int game(){
     srand(time(NULL));
 	int difficulty, num_of_colors, reaction_time;
 	
-	
 	printf("\nChoose the difficulty:\n");
     printf("1. EASY - 1.24s Reaction Time w/ 3 Colors\n");
     printf("2. NORMAL - 0.98s Reaction Time w/ 4 Colors\n");
     printf("3. HARD - 0.68s Reaction Time w/ 4 Colors\n");
     printf("4. INSANE - 0.40s Reaction Time w/ 5 Colors");
-	
 	
     // ERROR HANDLING
 	do{
@@ -140,27 +135,27 @@ void color_flash(int round_flashes, int num_of_colors, int reaction_time){
 		switch(current_color){
 			case 0: //BLUE
 				system("color 10");
-				Beep(DO, reaction_time / 1000);
+				Beep(1046.50, reaction_time / 1000);
 				usleep(reaction_time);
 				break;
 			case 1: // GREEN
 				system("color 20");
-				Beep(RE, reaction_time / 1000);
+				Beep(1174.66, reaction_time / 1000);
 				usleep(reaction_time);
 				break;
 			case 2: // AQUA
 				system("color 30");
-				Beep(MI, reaction_time / 1000);
+				Beep(1318.51, reaction_time / 1000);
 				usleep(reaction_time);
 				break;
 			case 3: // RED
 				system("color 40");
-				Beep(FA, reaction_time / 1000);
+				Beep(1396.91, reaction_time / 1000);
 				usleep(reaction_time);
 				break;
 			case 4: // PURPLE
 				system("color 50");
-				Beep(SOL, reaction_time / 1000);
+				Beep(1567.98, reaction_time / 1000);
 				usleep(reaction_time);
 				break;	
 		}
@@ -179,26 +174,22 @@ void play(int difficulty, int num_of_colors, int reaction_time){
 	
 	// STATE OF PLAY
 	while(status == 1){
-		if(round_counter % 5 == 0){
-			/* <-- This won't work
+		system("color 06"); // BLACK BACKGROUND YELLOW FOREGROUND
+		if(round_counter % 6 == 0){
 			#pragma omp parallel
 			{
-				//#pragma omp single
-				//{
-				printf("\n\t\t     CONGRATS ON REACHING LEVEL 5 !!! - FROM THREAD %d OF %d", omp_get_thread_num(), omp_get_num_threads());
-				//}
+				printf("\n\t\t     CONGRATS ON PASSING LEVEL %d !!! - FROM THREAD %d OF %d", round_counter - 1, omp_get_thread_num(), omp_get_num_threads());
 			}
-			*/
 			printf("\n\t\t\t            Keep up the good work !!\n");
+			check_jingle();
 		}
 		
 		if(round_counter != 1) free_answer(); // DELETE ANSWER AFTER EACH ROUND
-		
-		system("color 06"); // BLACK BACKGROUND YELLOW FOREGROUND
 		printf("\n\t\t\t\t\tROUND %d - %s\n", round_counter, diff);
 		printf("\t\t\t\t\t    %d Flashes\n", round_flashes);
 		printf("\n\t\t\t      Press the ENTER key when ready to start...");
 		
+		fflush(stdin);
 		getchar();
 		
 		system("cls");
