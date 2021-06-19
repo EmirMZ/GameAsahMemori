@@ -38,7 +38,7 @@ void menuMain (int selected,int menu_select, int menu_total_string,char menu [9]
 
 
 int menu(int menu_select){
-    int selection = 1, i = 1, selected_menu = 0;
+    int selection = 1, i = 1, selected_menu = -2;
     
     int menu_limit[9];
 	
@@ -58,7 +58,7 @@ int menu(int menu_select){
 	
 
 
-	while(selected_menu == 0){
+	while(selected_menu == -2){
 		system("cls");
 		menuMain(selection,menu_select,menu_limit[menu_select],menu);
 
