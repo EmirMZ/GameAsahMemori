@@ -49,7 +49,7 @@ void display_answer(){
 }
 
 void game_difficulty(int difficulty, int *num_of_colors, int *reaction_time);
-void play(int difficulty, int num_of_colors, int reaction_time);
+void play(int difficulty, int num_of_colors, int reaction_time, int random_answer);
 void color_flash(int round_flashes, int num_of_colors, int reaction_time);
 
 int game(){    
@@ -76,7 +76,7 @@ int game(){
     */
     
     srand(time(NULL));
-	int difficulty, num_of_colors, reaction_time;
+	int difficulty, num_of_colors, reaction_time, random_answer;
 	
 	printf("\nChoose the difficulty:\n");
     printf("1. EASY - 1.24s Reaction Time w/ 3 Colors\n");
@@ -94,7 +94,7 @@ int game(){
     game_difficulty(difficulty, &num_of_colors, &reaction_time);
 	
     // COMMENCING GAME
-    play(difficulty, num_of_colors, reaction_time);
+    play(difficulty, num_of_colors, reaction_time, random_answer);
     
     return 0;
 }
@@ -163,9 +163,11 @@ void color_flash(int round_flashes, int num_of_colors, int reaction_time){
 	}while(round_flashes != 0);
 }
 
-void play(int difficulty, int num_of_colors, int reaction_time){
+void play(int difficulty, int num_of_colors, int reaction_time, int random_answer){
 	int round_flashes = 3, round_counter = 1, status = 1; // <- GAME'S STATUS (CORRECT GUESS OR WRONG GUESS)
+	int ans, i;
 	char diff[6];
+	struct Node *var = rear;
 	
 	if(difficulty == 1) strcpy(diff, "EASY");
 	else if(difficulty == 2) strcpy(diff, "NORMAL");
@@ -197,5 +199,29 @@ void play(int difficulty, int num_of_colors, int reaction_time){
 		round_counter++;
 		round_flashes++;
 		display_answer();
+		
+		// bagian input jawaban underprogress
+		// masih bermasalah gabisa nyocokin jawaban, tapi kalau salah langsung back to difficulty
+		
+		/*printf ("\n\t\t\t      Submit your answers :");
+		scanf("%d", &ans);
+		for (i = 2; i < round_flashes ; i++)
+		{
+			scanf("%d", &ans);	
+		}
+		if (ans == random_answer)
+		{
+			printf("\n\t\t\t      Congrats coming into the next stage!");
+		}
+		else
+		{
+			printf ("\n\t\t\t      GAME OVER ");
+			printf ("\n\t\t\t      Thank you for playing!");
+			printf ("\n\n\n\t\t\t      press anywhere to continue");
+			getch();
+			system("cls");
+			main(); //diganti main() kalau int gamenya diganti yaa
+		}
+		system("cls");*/
 	}
 }
