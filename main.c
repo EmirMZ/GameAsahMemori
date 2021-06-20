@@ -13,8 +13,7 @@ struct high_score{
 
 int store_highscore(int score,FILE *fp, char nama[32]){
 	
-	
-	
+	int i, size, j;
 	while (fgetc(fp) != EOF){
 		fscanf(fp,"%[^\t]s%d",high_score_temp[i].nama,high_score_temp[i].score);
 		i++;
