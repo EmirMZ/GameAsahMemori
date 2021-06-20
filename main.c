@@ -8,8 +8,9 @@
 
 
 int main(){
+	int score;
 	//enableVT();
-	game();
+	score = game();
 	//help();
 	//menu(0);
 	/*int uyey = menu(0);
