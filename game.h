@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 #include <time.h>
 #include <omp.h>
@@ -9,11 +10,11 @@
 struct Node{
     int answer;
     struct Node* next;
-} *rear, *front;
+} *front, *rear;
 typedef struct Node Node;
 
 void free_answer(){
-    struct Node* var = rear;
+    Node *var = rear;
     while(var!=NULL){
         struct Node* buf = var->next;
 		free(var);
@@ -39,7 +40,7 @@ void add_answer(int random_answer){
 }
 
 void display_answer(){
-    struct Node *var = rear;
+    Node *var = rear;
     if(var != NULL){
         while(var != NULL){
             printf("%d", var->answer);
@@ -48,9 +49,13 @@ void display_answer(){
     }
 }
 
-void game_difficulty(int difficulty, int *num_of_colors, int *reaction_time);
-void play(int difficulty, int num_of_colors, int reaction_time);
+void game_difficulty(int difficulty, int *num_of_colors, int *reaction_time, int *score_multiplier);
+void play(int difficulty, int num_of_colors, int reaction_time, int *score, int *score_multiplier);
 void color_flash(int round_flashes, int num_of_colors, int reaction_time);
+void input_and_check_answer(char input_answer[60], char answer[60], int *status);
+void concatenate(char answer[60]);
+void display_score(int *score);
+void prompt();
 
 int game(){    
     /*
@@ -76,7 +81,7 @@ int game(){
     */
     
     srand(time(NULL));
-	int difficulty, num_of_colors, reaction_time;
+	int score, score_multiplier, difficulty, num_of_colors, reaction_time;
 	
 	printf("\nChoose the difficulty:\n");
     printf("1. EASY - 1.24s Reaction Time w/ 3 Colors\n");
@@ -90,32 +95,38 @@ int game(){
 	    scanf("%d", &difficulty);
 	}while(difficulty < 1 || difficulty > 4);
 
+	system("cls");
+	
     // SETTING UP GAME BY THE SELECTED DIFFICULTY
-    game_difficulty(difficulty, &num_of_colors, &reaction_time);
+    game_difficulty(difficulty, &num_of_colors, &reaction_time, &score_multiplier);
 	
     // COMMENCING GAME
-    play(difficulty, num_of_colors, reaction_time);
+    play(difficulty, num_of_colors, reaction_time, &score, &score_multiplier);
     
-    return 0;
+    return score;
 }
 
-void game_difficulty(int difficulty, int *num_of_colors, int *reaction_time){
+void game_difficulty(int difficulty, int *num_of_colors, int *reaction_time, int *score_multiplier){
 	switch(difficulty){
     	case 1:
     		*num_of_colors = 3;
     		*reaction_time = 620000;
+    		*score_multiplier = 20;
     		break;
     	case 2:
     		*num_of_colors = 4;
     		*reaction_time = 490000;
+    		*score_multiplier = 40;
     		break;
     	case 3:
     		*num_of_colors = 4;
     		*reaction_time = 340000;
+    		*score_multiplier = 70;
     		break;
     	case 4:
     		*num_of_colors = 5;
     		*reaction_time = 200000;
+    		*score_multiplier = 100;
     		break;
 	}
 }
@@ -163,9 +174,9 @@ void color_flash(int round_flashes, int num_of_colors, int reaction_time){
 	}while(round_flashes != 0);
 }
 
-void play(int difficulty, int num_of_colors, int reaction_time){
-	int round_flashes = 3, round_counter = 1, status = 1; // <- GAME'S STATUS (CORRECT GUESS OR WRONG GUESS)
-	char diff[6];
+void play(int difficulty, int num_of_colors, int reaction_time, int *score, int *score_multiplier){
+	int i, round_flashes = 3, round_counter = 1, status = 1; // <- GAME'S STATUS (CORRECT GUESS OR WRONG GUESS)
+	char diff[6], answer[60], input_answer[60];
 	
 	if(difficulty == 1) strcpy(diff, "EASY");
 	else if(difficulty == 2) strcpy(diff, "NORMAL");
@@ -175,6 +186,7 @@ void play(int difficulty, int num_of_colors, int reaction_time){
 	// STATE OF PLAY
 	while(status == 1){
 		system("color 06"); // BLACK BACKGROUND YELLOW FOREGROUND
+		display_score(score);
 		if(round_counter % 6 == 0){
 			#pragma omp parallel
 			{
@@ -184,18 +196,63 @@ void play(int difficulty, int num_of_colors, int reaction_time){
 			check_jingle();
 		}
 		
-		if(round_counter != 1) free_answer(); // DELETE ANSWER AFTER EACH ROUND
 		printf("\n\t\t\t\t\tROUND %d - %s\n", round_counter, diff);
 		printf("\t\t\t\t\t    %d Flashes\n", round_flashes);
-		printf("\n\t\t\t      Press the ENTER key when ready to start...");
-		
-		fflush(stdin);
-		getchar();
+
+		prompt();
 		
 		system("cls");
 		color_flash(round_flashes, num_of_colors, reaction_time);
+		display_answer();
+		concatenate(answer);
+		input_and_check_answer(input_answer, answer, &status);
+		*score += round_flashes * *score_multiplier * status;
 		round_counter++;
 		round_flashes++;
-		display_answer();
+		system("cls");
 	}
+}
+
+void input_and_check_answer(char input_answer[60], char answer[60], int *status){
+	system("color 06");
+	printf ("\n\t\t\t          Submit your answers: ");
+	scanf("%s", input_answer);
+	free_answer();
+	if (strcmp(input_answer, answer) == 0){
+		printf("\n\t\t\t    Correct! Get ready for the next round");
+		correct_jingle();
+		prompt();		
+	}else{
+		printf ("\n\t\t\t                    Wrong!");
+		wrong_jingle();
+		printf ("\n\t\t\t            Thank you for playing!");
+		prompt();
+		system("cls");
+		*status = 0;
+	}
+	
+}
+
+void concatenate(char answer[60]){
+	Node *var = rear;
+	char s1[30], s2[30];
+	if(var != NULL){
+		sprintf(s1, "%d", var->answer);
+		while(var->next != NULL){
+			sprintf(s2, "%d", var->next->answer);
+			strcat(s1, s2);
+			strcpy(answer, s1);
+			var = var->next;
+		}
+	}	
+}
+
+void prompt(){
+	printf("\n\t\t\t      Press the ENTER key to continue...");
+	fflush(stdin);
+	getchar();
+}
+
+void display_score(int *score){
+	printf("Score: %d", *score);
 }

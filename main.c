@@ -110,8 +110,8 @@ int main(){
     			system("cls");
     			printf("Silahkan memasukkan nama :");
     			fflush(stdin);
-    			scanf("%s", &nama);
-    			score = 1000;
+    			scanf("%s", nama);
+    			score = 1000; // score = game(); <-- is now applicable
     			store_highscore(score,nama);
     			break;
     		
