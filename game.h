@@ -83,17 +83,7 @@ int game(){
     srand(time(NULL));
 	int score = 0, score_multiplier, difficulty, num_of_colors, reaction_time;
 	
-	printf("\n\t\t\t                Choose the Difficulty \n");
-    printf("\t\t\t     1. EASY - 1.24s Reaction Time w/ 3 Colors\n");
-    printf("\t\t\t     2. NORMAL - 0.98s Reaction Time w/ 4 Colors\n");
-    printf("\t\t\t     3. HARD - 0.68s Reaction Time w/ 4 Colors\n");
-    printf("\t\t\t     4. INSANE - 0.40s Reaction Time w/ 5 Colors");
-	
-    // ERROR HANDLING
-	do{
-		printf("\n\t\t\t                 Submit here : ");
-	    scanf("%d", &difficulty);
-	}while(difficulty < 1 || difficulty > 4);
+	difficulty = menu(1);
 
 	printf ("\n---------------------------------------------------------------------------------------------------\n");
 	system("cls");

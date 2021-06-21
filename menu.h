@@ -24,7 +24,6 @@ void reset () {
 void menuMain (int selected,int menu_select, int menu_total_string,char menu [9][5][32]){
 	int i;
 	
-	header();
 	for (i = 0; i < menu_total_string; i++)
 	{
 		if (selected == i)
@@ -35,7 +34,6 @@ void menuMain (int selected,int menu_select, int menu_total_string,char menu [9]
 		reset();
 		
 	}
-	footer();
 }
 
 
@@ -53,10 +51,12 @@ int menu(int menu_select){
 	strcpy (menu[0][1], "Help");
 	strcpy (menu[0][2], "High Score");
 	strcpy (menu[0][3], "Exit");
-	strcpy (menu[1][0], "Play");
-	strcpy (menu[1][1], "Play");
-	strcpy (menu[1][2], "Play");
-	strcpy (menu[1][3], "Play");	
+	
+	
+	strcpy (menu[1][0], "1. EASY - 1.24s Reaction Time w/ 3 Colors");
+	strcpy (menu[1][1], "2. NORMAL - 0.98s Reaction Time w/ 4 Colors");
+	strcpy (menu[1][2], "3. HARD - 0.68s Reaction Time w/ 4 Colors");
+	strcpy (menu[1][3], "4. INSANE - 0.40s Reaction Time w/ 5 Colors");	
 	
 
 
