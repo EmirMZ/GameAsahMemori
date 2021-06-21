@@ -81,7 +81,7 @@ int game(){
     */
     
     srand(time(NULL));
-	int score, score_multiplier, difficulty, num_of_colors, reaction_time;
+	int score = 0, score_multiplier, difficulty, num_of_colors, reaction_time;
 	
 	printf("\n\t\t\t                Choose the Difficulty \n");
     printf("\t\t\t     1. EASY - 1.24s Reaction Time w/ 3 Colors\n");

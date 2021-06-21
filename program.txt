@@ -1,7 +1,4 @@
-Emir 19169
-Jhonees 18467
-Bolaes 6334
-KKakde 26500
-MMDasdr 15724
-Emmir 60
-sfs 0
+emir 600
+rafly 500
+andin 100
+ananta 0
