@@ -108,10 +108,13 @@ int main(){
     	switch(menu(0)){
     		case 0:
     			system("cls");
-    			printf("Silahkan memasukkan nama :");
+    			printf ("---------------------------------------------------------------------------------------------------\n");
+    			printf("\n\t\t\t              Enter your name : ");
     			fflush(stdin);
     			scanf("%s", nama);
+    			printf ("\n---------------------------------------------------------------------------------------------------\n");
     			score = 1000; // score = game(); <-- is now applicable
+    			game();
     			store_highscore(score,nama);
     			break;
     		
@@ -129,11 +132,6 @@ int main(){
 		}
     	
 	}
-
-
-	
-
-    
-
+	return 0;
 }
 

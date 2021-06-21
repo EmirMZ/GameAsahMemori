@@ -3,6 +3,7 @@
 #include <strings.h>
 #include <windows.h>
 #include <omp.h>
+#include "banner.h"
 
 void red () {
   printf("\033[1;7;31m");
@@ -23,6 +24,7 @@ void reset () {
 void menuMain (int selected,int menu_select, int menu_total_string,char menu [9][5][32]){
 	int i;
 	
+	header();
 	for (i = 0; i < menu_total_string; i++)
 	{
 		if (selected == i)
@@ -33,7 +35,7 @@ void menuMain (int selected,int menu_select, int menu_total_string,char menu [9]
 		reset();
 		
 	}
-	
+	footer();
 }
 
 

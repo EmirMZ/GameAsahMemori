@@ -1,3 +1,11 @@
-MIR 1000
-[ı 0
-ADADF 1000
+0 0
+andin 1000
+andin 1000
+andin 1000
+andin 1000
+andin 1000
+andin 1000
+andin 1000
+andin 1000
+andin 0
+xıq -1903329443

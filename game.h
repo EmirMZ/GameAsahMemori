@@ -83,18 +83,19 @@ int game(){
     srand(time(NULL));
 	int score, score_multiplier, difficulty, num_of_colors, reaction_time;
 	
-	printf("\nChoose the difficulty:\n");
-    printf("1. EASY - 1.24s Reaction Time w/ 3 Colors\n");
-    printf("2. NORMAL - 0.98s Reaction Time w/ 4 Colors\n");
-    printf("3. HARD - 0.68s Reaction Time w/ 4 Colors\n");
-    printf("4. INSANE - 0.40s Reaction Time w/ 5 Colors");
+	printf("\n\t\t\t                Choose the Difficulty \n");
+    printf("\t\t\t     1. EASY - 1.24s Reaction Time w/ 3 Colors\n");
+    printf("\t\t\t     2. NORMAL - 0.98s Reaction Time w/ 4 Colors\n");
+    printf("\t\t\t     3. HARD - 0.68s Reaction Time w/ 4 Colors\n");
+    printf("\t\t\t     4. INSANE - 0.40s Reaction Time w/ 5 Colors");
 	
     // ERROR HANDLING
 	do{
-		printf("\n? ");
+		printf("\n\t\t\t                 Submit here : ");
 	    scanf("%d", &difficulty);
 	}while(difficulty < 1 || difficulty > 4);
 
+	printf ("\n---------------------------------------------------------------------------------------------------\n");
 	system("cls");
 	
     // SETTING UP GAME BY THE SELECTED DIFFICULTY
@@ -185,9 +186,10 @@ void play(int difficulty, int num_of_colors, int reaction_time, int *score, int 
 			printf("\n\t\t\t            Keep up the good work !!\n");
 			check_jingle();
 		}
-		
-		printf("\n\t\t\t\t\tROUND %d - %s\n", round_counter, diff);
-		printf("\t\t\t\t\t    %d Flashes\n", round_flashes);
+		printf("\t  ------------------------------------------------------------\n");
+		printf("\n\t\t\t\t     ** ROUND %d - %s **\n", round_counter, diff);
+		printf("\t\t\t\t         %d Flashes\n", round_flashes);
+		printf("\n\t\t  ------------------------------------------------------------");
 
 		prompt();
 		
@@ -206,17 +208,22 @@ void play(int difficulty, int num_of_colors, int reaction_time, int *score, int 
 
 void input_and_check_answer(char input_answer[60], char answer[60], int *status){
 	system("color 06");
-	printf ("\n\t\t\t          Submit your answers: ");
+	printf("\t\t  ------------------------------------------------------------");
+	printf ("\n\n\t\t\t          Submit your answers: ");
 	scanf("%s", input_answer);
 	free_answer();
 	if (strcmp(input_answer, answer) == 0){
-		printf("\n\t\t\t    Correct! Get ready for the next round");
+		printf("\n\n\t\t  ------------------------------------------------------------");
+		printf("\n\t\t\t      Correct! Get ready for the next round");
 		correct_jingle();
+		printf("\n\t\t  ------------------------------------------------------------");
 		prompt();		
 	}else{
+		printf("\n\n\t\t  ------------------------------------------------------------");
 		printf ("\n\t\t\t                    Wrong!");
 		wrong_jingle();
 		printf ("\n\t\t\t            Thank you for playing!");
+		printf("\n\t\t  ------------------------------------------------------------");
 		prompt();
 		system("cls");
 		*status = 0;
