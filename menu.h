@@ -49,7 +49,7 @@ int menu(int menu_select){
 
 	strcpy (menu[0][0], "Play");
 	strcpy (menu[0][1], "Help");
-	strcpy (menu[0][2], "Score");
+	strcpy (menu[0][2], "High Score");
 	strcpy (menu[0][3], "Exit");
 	strcpy (menu[1][0], "Play");
 	strcpy (menu[1][1], "Play");
