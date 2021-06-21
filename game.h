@@ -83,7 +83,7 @@ int game(){
     srand(time(NULL));
 	int score = 0, score_multiplier, difficulty, num_of_colors, reaction_time;
 	
-	difficulty = menu(1);
+	difficulty = menu(1) + 1;
 
 	printf ("\n---------------------------------------------------------------------------------------------------\n");
 	system("cls");

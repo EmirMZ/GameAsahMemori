@@ -21,7 +21,7 @@ void reset () {
   printf("\033[0m");
 }
 
-void menuMain (int selected,int menu_select, int menu_total_string,char menu [9][5][32]){
+void menuMain (int selected,int menu_select, int menu_total_string,char menu [9][5][64]){
 	int i;
 	
 	for (i = 0; i < menu_total_string; i++)
@@ -38,13 +38,14 @@ void menuMain (int selected,int menu_select, int menu_total_string,char menu [9]
 
 
 int menu(int menu_select){
-    int selection = 1, i = 1, selected_menu = -2;
+    int selection = 0, i = 1, selected_menu = -2;
     
     int menu_limit[9];
 	
 	menu_limit[0] = 4; //limit option main menu
+	menu_limit[1] = 4;
 	
-	char menu [9][5][32];// bracket pertama adalah menu window, bracket kedua adalah menu string, bracket ketiga character limit
+	char menu [9][5][64];// bracket pertama adalah menu window, bracket kedua adalah menu string, bracket ketiga character limit
 
 
 	strcpy (menu[0][0], "Play");

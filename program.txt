@@ -2,3 +2,7 @@ emir 600
 rafly 500
 andin 100
 ananta 0
+Emir 60
+asdad 0
+AAA 0
+EMIR 0
