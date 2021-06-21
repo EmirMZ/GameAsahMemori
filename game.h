@@ -4,8 +4,8 @@
 #include <unistd.h>
 #include <time.h>
 #include <omp.h>
-#include <windows.h>
 #include "soundtracks.h"
+#include "colors.h"
 
 struct Node{
     int answer;
@@ -132,7 +132,7 @@ void game_difficulty(int difficulty, int *num_of_colors, int *reaction_time, int
 }
 
 void color_flash(int round_flashes, int num_of_colors, int reaction_time){
-	int prev_color = -1, current_color = -1;
+	int prev_color = -1, current_color = -1;	
 	
 	// RANDOMIZE COLOR WITHOUT USING PARALLEL PROGRAMMING
 	do{
@@ -145,29 +145,19 @@ void color_flash(int round_flashes, int num_of_colors, int reaction_time){
 		// COLOR FLASH TIME !!
 		switch(current_color){
 			case 0: //BLUE
-				system("color 10");
-				Beep(1046.50, reaction_time / 1000);
-				usleep(reaction_time);
+				blue_flash(reaction_time);
 				break;
 			case 1: // GREEN
-				system("color 20");
-				Beep(1174.66, reaction_time / 1000);
-				usleep(reaction_time);
+				green_flash(reaction_time);
 				break;
 			case 2: // AQUA
-				system("color 30");
-				Beep(1318.51, reaction_time / 1000);
-				usleep(reaction_time);
+				aqua_flash(reaction_time);
 				break;
 			case 3: // RED
-				system("color 40");
-				Beep(1396.91, reaction_time / 1000);
-				usleep(reaction_time);
+				red_flash(reaction_time);
 				break;
 			case 4: // PURPLE
-				system("color 50");
-				Beep(1567.98, reaction_time / 1000);
-				usleep(reaction_time);
+				purple_flash(reaction_time);
 				break;	
 		}
 		round_flashes--;
@@ -206,6 +196,7 @@ void play(int difficulty, int num_of_colors, int reaction_time, int *score, int 
 		display_answer();
 		concatenate(answer);
 		input_and_check_answer(input_answer, answer, &status);
+		#pragma omp single
 		*score += round_flashes * *score_multiplier * status;
 		round_counter++;
 		round_flashes++;
