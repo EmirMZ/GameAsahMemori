@@ -22,9 +22,6 @@ int store_highscore(int score, char nama[32]){
 	int overwrite_status = 0;
 	int i = 0,j,size;
 	
-<<<<<<< Updated upstream
-	int i, size, j;
-=======
 	
 	
 	fp = fopen(filename, "r");
@@ -44,7 +41,6 @@ int store_highscore(int score, char nama[32]){
 
 	
 	
->>>>>>> Stashed changes
 	while (fgetc(fp) != EOF){
 		fscanf(fp,"%s%d",nama_database[i],&score_database[i]);
 		i++;
