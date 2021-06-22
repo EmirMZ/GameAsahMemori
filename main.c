@@ -5,10 +5,6 @@
 #include "menu.h"
 #include "game.h"
 #include "help.h"
-#include "banner.h"
-
-
-
 
 int store_highscore(int score, char nama[32]);
 void sort_score(); // in a decreasing order
@@ -16,7 +12,6 @@ void sort_score(); // in a decreasing order
 int main(){
 	char nama[32];
     int i,j,size,score,exit_status = -1;
-
 	char str[60];
 
     while(exit_status == -1){
@@ -28,11 +23,8 @@ int main(){
     			fflush(stdin);
     			scanf("%s", nama);
     			printf ("\n---------------------------------------------------------------------------------------------------\n");
-    			score = game(); // rand() % 24000; 
-    			// printf("\nYour score is %d", score);
+    			score = game();
     			store_highscore(score,nama);
-    			// sleep(3);
-    			
     			sort_score();
     			break;
     		

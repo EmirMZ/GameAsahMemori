@@ -78,11 +78,11 @@ int menu(int menu_select){//menu apa yang ingin ditampilkan
 	strcpy (menu[1][2], "3. HARD - 0.68s Reaction Time w/ 4 Colors");
 	strcpy (menu[1][3], "4. INSANE - 0.40s Reaction Time w/ 5 Colors");
 	
-	strcpy (menu[2][0], "Play");
-	strcpy (menu[2][1], "Help");
-	strcpy (menu[2][2], "High Score");
-	strcpy (menu[2][3], "Exit");
-	strcpy (menu[2][4], "Exit");
+	strcpy (menu[2][0], "BLUE");
+	strcpy (menu[2][1], "GREEN");
+	strcpy (menu[2][2], "AQUA");
+	strcpy (menu[2][3], "RED");
+	strcpy (menu[2][4], "PURPLE");
 
 
 	while(selected_menu == -2){

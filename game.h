@@ -7,7 +7,6 @@
 #include "queue.h"
 #include "soundtracks.h"
 #include "colors.h"
-
 #define MAX_LEN 100 // Length of each line in input file.
 
 typedef struct score_tracking{
@@ -22,7 +21,6 @@ void game_difficulty(int difficulty, int *num_of_colors, int *reaction_time, int
 void color_flash(int round_flashes, int num_of_colors, int reaction_time);
 void concatenate(char answer[60]);
 void display_score(int *score);
-int print_answer_guide();
 void prompt();
 
 int game(){
@@ -194,16 +192,19 @@ void play(int difficulty, int num_of_colors, int reaction_time, int *score, int 
 
 void input_and_check_answer(char input_answer[60], char answer[60], int *status,int round_flashes){
 	int i;
+	char character_answer;
+	
 	system("color 06");
 	printf("\t\t  ------------------------------------------------------------");
-	for(i = 0;i < round_flashes;i++){
-		input_answer[i] = print_answer_guide();
+	for(i = 0; i < round_flashes;i++){
+		character_answer = menu(2) + '0';
+		input_answer[i] = character_answer;
 	}
 	
+	printf("%s\n", input_answer);
+	display_answer();
+	getch();
 	
-	printf ("\n\n\t\t\t          Submit your answers: ");
-	scanf("%s", input_answer);
-	free_answer();
 	if (strcmp(input_answer, answer) == 0){
 		printf("\n\n\t\t  ------------------------------------------------------------");
 		printf("\n\t\t\t      Correct! Get ready for the next round");
@@ -220,6 +221,7 @@ void input_and_check_answer(char input_answer[60], char answer[60], int *status,
 		system("cls");
 		*status = 0;
 	}
+	free_answer();
 }
 
 void concatenate(char answer[60]){
@@ -244,18 +246,6 @@ void prompt(){
 
 void display_score(int *score){
 	printf("Score: %d", *score);
-}
-	
-int print_answer_guide(){
-	
-	/*
-	printf("\n\n BLUE   = 0\n");
-	printf("\n GREEN  = 1\n");
-	printf("\n AQUA   = 2\n");
-	printf("\n RED    = 3\n");
-	printf("\n PURPLE = 4\n");
-	*/
-	return menu(2);
 }
 
 void score_tracker(st record){
