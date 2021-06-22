@@ -1,8 +1,7 @@
-emir 600
-rafly 500
-andin 100
-ananta 0
-Emir 60
-asdad 0
-AAA 0
-EMIR 0
+18467 b
+6334 c
+2500 d
+41 d
+19169 e
+15724 f
+11478 g

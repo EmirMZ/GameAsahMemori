@@ -7,6 +7,7 @@
 #include "help.h"
 
 int store_highscore(int score, char nama[32]);
+void sort_score(); // in a decreasing order
 
 int main(){
 	char nama[32];
@@ -23,8 +24,12 @@ int main(){
     			fflush(stdin);
     			scanf("%s", nama);
     			printf ("\n---------------------------------------------------------------------------------------------------\n");
-    			score = game(); 
+    			score = game(); // rand() % 24000; 
+    			// printf("\nYour score is %d", score);
     			store_highscore(score,nama);
+    			// sleep(3);
+    			
+    			sort_score();
     			break;
     		
     		case 1:
@@ -77,7 +82,7 @@ int store_highscore(int score, char nama[32]){
 	//fseek( fp, 0, SEEK_SET );
 	
 	while (ch != EOF){ 
-		fscanf(fp,"%s%d",nama_database[i],&score_database[i]);
+		fscanf(fp,"%d%s", &score_database[i], nama_database[i]);
 		ch = fgetc(fp); 
 		i++;
 	}
@@ -114,15 +119,62 @@ int store_highscore(int score, char nama[32]){
 	fp = fopen(filename, "w");
 	for(i = 0;i <= size ;++i){
 		
-		printf("%s %d\n",nama_database[i],score_database[i]);
-		fprintf(fp,"%s %d\n",nama_database[i],score_database[i]);
+		fprintf(fp,"%d %s\n", score_database[i], nama_database[i]);
 	}
 	
 	fclose(fp);	
 
-	getch();
+	// getch();
 	
 	//memset(high_score, 0, sizeof(high_score));
-	}
+}
 
+void sort_score(){
+    const char *file_name = "program.txt";
+    const char *file_summary = "sorted.txt";
+    char temp_data[MAX_LEN];
+    char **data = NULL; // String List
+    int i, j;
+    int num_of_lines = 0;
+	
+    FILE * p_file_log = NULL;
+    FILE * p_Summary = NULL;
 
+    if ( (p_file_log = fopen(file_name, "r")) == NULL ) {
+        fprintf(stderr, "Error: Could not open %s\n", file_name);
+    }
+    if ( (p_Summary = fopen(file_summary, "w")) == NULL ) {
+        fprintf(stderr, "Error: Could not open %s\n", file_summary);
+    }
+
+    // Read and store in a string list.
+    while(fgets(temp_data, MAX_LEN, p_file_log) != NULL) {
+        // Remove the trailing newline character
+        if(strchr(temp_data,'\n'))
+            temp_data[strlen(temp_data) - 1] = '\0';
+        data = (char**)realloc(data, sizeof(char**) * (num_of_lines + 1));
+        data[num_of_lines] = (char*)calloc(MAX_LEN, sizeof(char));
+        strcpy(data[num_of_lines], temp_data);
+        num_of_lines++;
+    }
+    // Sort the array decrreasingly.
+    for(i= 0; i < (num_of_lines - 1); ++i) {
+        for(j = 0; j < ( num_of_lines - i - 1); ++j) {
+            if(atoi(data[j]) < atoi(data[j + 1])){
+                strcpy(temp_data, data[j]);
+                strcpy(data[j], data[j + 1]);
+                strcpy(data[j + 1], temp_data);
+            }
+        }
+    }
+    // Write it to outfile. file.
+    for(i = 0; i < num_of_lines; i++)
+        fprintf(p_Summary,"%s\n",data[i]);
+    // free each string
+    for(i = 0; i < num_of_lines; i++)
+        free(data[i]);
+    // free string list.
+    free(data);
+    fclose(p_file_log);
+    fclose(p_Summary);
+}

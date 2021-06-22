@@ -6,58 +6,25 @@
 #include <omp.h>
 #include "soundtracks.h"
 #include "colors.h"
+#include "queue.h"
+#define MAX_LEN 100 // Length of each line in input file.
 
-struct Node{
-    int answer;
-    struct Node* next;
-} *front, *rear;
-typedef struct Node Node;
+typedef struct score_tracking{
+	int *current_score;
+	int highest_score;
+} st;
 
-void free_answer(){
-    Node *var = rear;
-    while(var!=NULL){
-        struct Node* buf = var->next;
-		free(var);
-		var = buf;
-    }
-    rear = NULL;
-    front = NULL;
-}
-
-void add_answer(int random_answer){
-    Node *temp;
-    temp = (Node*)malloc(sizeof(Node));
-    temp->answer = random_answer;
-    if (front == NULL){
-        front = temp;
-        front->next = NULL;
-        rear = front;
-    }else{
-        front->next = temp;
-        front = temp;
-        front->next = NULL;
-    }
-}
-
-void display_answer(){
-    Node *var = rear;
-    if(var != NULL){
-        while(var != NULL){
-            printf("%d", var->answer);
-            var = var->next;
-        }
-    }
-}
-
-void game_difficulty(int difficulty, int *num_of_colors, int *reaction_time, int *score_multiplier);
-void play(int difficulty, int num_of_colors, int reaction_time, int *score, int *score_multiplier);
-void color_flash(int round_flashes, int num_of_colors, int reaction_time);
+void score_tracker(st record);
+void play(int difficulty, int num_of_colors, int reaction_time, int *score, int *score_multiplier, st record);
 void input_and_check_answer(char input_answer[60], char answer[60], int *status);
+void game_difficulty(int difficulty, int *num_of_colors, int *reaction_time, int *score_multiplier);
+void color_flash(int round_flashes, int num_of_colors, int reaction_time);
 void concatenate(char answer[60]);
 void display_score(int *score);
+void print_answer_guide();
 void prompt();
 
-int game(){    
+int game(){
     /*
     	SYSTEM("COLOR XX") FORMAT:
     	- FIRST DIGIT = BACKGROUND COLOR
@@ -81,7 +48,19 @@ int game(){
     */
     
     srand(time(NULL));
-	int score = 0, score_multiplier, difficulty, num_of_colors, reaction_time;
+	int score = 0, highscore, score_multiplier, difficulty, num_of_colors, reaction_time;
+	
+	FILE *fp;
+	const char *filename = "program.txt"; 
+	char highest_score_in_file[30];
+	fp = fopen(filename, "r");
+	fgets(highest_score_in_file, 30, fp);
+	fclose(fp);
+	
+	struct score_tracking record;
+	record.current_score = &score;
+	record.highest_score = atoi(highest_score_in_file);
+	// record.highest_score = 
 	
 	printf("\n\t\t\t                Choose the Difficulty \n");
     printf("\t\t\t     1. EASY - 1.24s Reaction Time w/ 3 Colors\n");
@@ -102,7 +81,7 @@ int game(){
     game_difficulty(difficulty, &num_of_colors, &reaction_time, &score_multiplier);
 	
     // COMMENCING GAME
-    play(difficulty, num_of_colors, reaction_time, &score, &score_multiplier);
+    play(difficulty, num_of_colors, reaction_time, &score, &score_multiplier, record);
     
     return score;
 }
@@ -165,7 +144,7 @@ void color_flash(int round_flashes, int num_of_colors, int reaction_time){
 	}while(round_flashes != 0);
 }
 
-void play(int difficulty, int num_of_colors, int reaction_time, int *score, int *score_multiplier){
+void play(int difficulty, int num_of_colors, int reaction_time, int *score, int *score_multiplier, st record){
 	int i, round_flashes = 3, round_counter = 1, status = 1; // <- GAME'S STATUS (CORRECT GUESS OR WRONG GUESS)
 	char diff[6], answer[60], input_answer[60];
 	
@@ -186,6 +165,7 @@ void play(int difficulty, int num_of_colors, int reaction_time, int *score, int 
 			printf("\n\t\t\t            Keep up the good work !!\n");
 			check_jingle();
 		}
+		score_tracker(record);
 		printf("\t  ------------------------------------------------------------\n");
 		printf("\n\t\t\t\t     ** ROUND %d - %s **\n", round_counter, diff);
 		printf("\t\t\t\t         %d Flashes\n", round_flashes);
@@ -209,6 +189,7 @@ void play(int difficulty, int num_of_colors, int reaction_time, int *score, int 
 void input_and_check_answer(char input_answer[60], char answer[60], int *status){
 	system("color 06");
 	printf("\t\t  ------------------------------------------------------------");
+	print_answer_guide();
 	printf ("\n\n\t\t\t          Submit your answers: ");
 	scanf("%s", input_answer);
 	free_answer();
@@ -228,7 +209,6 @@ void input_and_check_answer(char input_answer[60], char answer[60], int *status)
 		system("cls");
 		*status = 0;
 	}
-	
 }
 
 void concatenate(char answer[60]){
@@ -253,4 +233,20 @@ void prompt(){
 
 void display_score(int *score){
 	printf("Score: %d", *score);
+}
+	
+void print_answer_guide(){
+	printf("\n\n BLUE   = 0\n");
+	printf("\n GREEN  = 1\n");
+	printf("\n AQUA   = 2\n");
+	printf("\n RED    = 3\n");
+	printf("\n PURPLE = 4\n");
+}
+
+void score_tracker(st record){
+	if(*(record.current_score) >= record.highest_score){
+		printf("\nCongratulations! You have achieved a new highscore.\n");
+	}else{
+		printf("\nYou are %d points away from the current highscore!\n", record.highest_score - *(record.current_score));
+	}
 }
