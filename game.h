@@ -4,9 +4,10 @@
 #include <unistd.h>
 #include <time.h>
 #include <omp.h>
+#include "queue.h"
 #include "soundtracks.h"
 #include "colors.h"
-#include "queue.h"
+
 #define MAX_LEN 100 // Length of each line in input file.
 
 typedef struct score_tracking{
@@ -16,12 +17,12 @@ typedef struct score_tracking{
 
 void score_tracker(st record);
 void play(int difficulty, int num_of_colors, int reaction_time, int *score, int *score_multiplier, st record);
-void input_and_check_answer(char input_answer[60], char answer[60], int *status);
+void input_and_check_answer(char input_answer[60], char answer[60], int *status,int round_flashes);
 void game_difficulty(int difficulty, int *num_of_colors, int *reaction_time, int *score_multiplier);
 void color_flash(int round_flashes, int num_of_colors, int reaction_time);
 void concatenate(char answer[60]);
 void display_score(int *score);
-void print_answer_guide();
+int print_answer_guide();
 void prompt();
 
 int game(){
@@ -62,6 +63,8 @@ int game(){
 	record.highest_score = atoi(highest_score_in_file);
 	// record.highest_score = 
 	
+	
+	/*
 	printf("\n\t\t\t                Choose the Difficulty \n");
     printf("\t\t\t     1. EASY - 1.24s Reaction Time w/ 3 Colors\n");
     printf("\t\t\t     2. NORMAL - 0.98s Reaction Time w/ 4 Colors\n");
@@ -73,6 +76,9 @@ int game(){
 		printf("\n\t\t\t                 Submit here : ");
 	    scanf("%d", &difficulty);
 	}while(difficulty < 1 || difficulty > 4);
+	*/
+	
+	difficulty = menu(1) + 1;
 
 	printf ("\n---------------------------------------------------------------------------------------------------\n");
 	system("cls");
@@ -177,7 +183,7 @@ void play(int difficulty, int num_of_colors, int reaction_time, int *score, int 
 		color_flash(round_flashes, num_of_colors, reaction_time);
 		display_answer();
 		concatenate(answer);
-		input_and_check_answer(input_answer, answer, &status);
+		input_and_check_answer(input_answer, answer, &status,round_flashes);
 		#pragma omp single
 		*score += round_flashes * *score_multiplier * status;
 		round_counter++;
@@ -186,10 +192,15 @@ void play(int difficulty, int num_of_colors, int reaction_time, int *score, int 
 	}
 }
 
-void input_and_check_answer(char input_answer[60], char answer[60], int *status){
+void input_and_check_answer(char input_answer[60], char answer[60], int *status,int round_flashes){
+	int i;
 	system("color 06");
 	printf("\t\t  ------------------------------------------------------------");
-	print_answer_guide();
+	for(i = 0;i < round_flashes;i++){
+		input_answer[i] = print_answer_guide();
+	}
+	
+	
 	printf ("\n\n\t\t\t          Submit your answers: ");
 	scanf("%s", input_answer);
 	free_answer();
@@ -235,12 +246,16 @@ void display_score(int *score){
 	printf("Score: %d", *score);
 }
 	
-void print_answer_guide(){
+int print_answer_guide(){
+	
+	/*
 	printf("\n\n BLUE   = 0\n");
 	printf("\n GREEN  = 1\n");
 	printf("\n AQUA   = 2\n");
 	printf("\n RED    = 3\n");
 	printf("\n PURPLE = 4\n");
+	*/
+	return menu(2);
 }
 
 void score_tracker(st record){

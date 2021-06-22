@@ -5,6 +5,10 @@
 #include "menu.h"
 #include "game.h"
 #include "help.h"
+#include "banner.h"
+
+
+
 
 int store_highscore(int score, char nama[32]);
 void sort_score(); // in a decreasing order

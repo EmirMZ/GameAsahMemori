@@ -3,7 +3,7 @@
 #include <strings.h>
 #include <windows.h>
 #include <omp.h>
-#include "banner.h"
+
 
 void red () {
   printf("\033[1;7;31m");
@@ -23,27 +23,46 @@ void reset () {
 
 void menuMain (int selected,int menu_select, int menu_total_string,char menu [9][5][64]){
 	int i;
+	char coloringtext[5][12] ={"\033[1;7;34m","\033[1;7;32m","\033[1;7;36m","\033[1;7;31m","\033[1;7;45m"};
+	char resetcolor[8]= {"\033[0m"};
 	
-	for (i = 0; i < menu_total_string; i++)
-	{
+	if(menu_select == 0||menu_select == 1){
+		for(i = 0; i < menu_total_string; i++){
 		if (selected == i)
 		{
 			red();
 		}
 		printf("%s\n", menu[menu_select][i]);
 		reset();
-		
 	}
+		
+	}else if(menu_select == 2){
+		for (i = 0; i < menu_total_string; i++){
+		
+		printf("%s%s%s",coloringtext[i], menu[menu_select][i],resetcolor);
+		if (selected == i)
+		{
+			printf(" <<");
+		}
+		
+			printf("\n");
+			reset();
+		}
+	}
+
+	
 }
 
 
-int menu(int menu_select){
-    int selection = 0, i = 1, selected_menu = -2;
+int menu(int menu_select){//menu apa yang ingin ditampilkan
+
+    int selection = 0, i = 1, selected_menu = -2;//yang dipilih sekarang, i, yang terpilih menunya
     
-    int menu_limit[9];
+    int menu_limit[9];// total baris setiap menu
 	
 	menu_limit[0] = 4; //limit option main menu
-	menu_limit[1] = 4;
+	menu_limit[1] = 4; // limit option game difficulty
+	menu_limit[2] = 5; // limit option answer input
 	
 	char menu [9][5][64];// bracket pertama adalah menu window, bracket kedua adalah menu string, bracket ketiga character limit
 
@@ -57,8 +76,13 @@ int menu(int menu_select){
 	strcpy (menu[1][0], "1. EASY - 1.24s Reaction Time w/ 3 Colors");
 	strcpy (menu[1][1], "2. NORMAL - 0.98s Reaction Time w/ 4 Colors");
 	strcpy (menu[1][2], "3. HARD - 0.68s Reaction Time w/ 4 Colors");
-	strcpy (menu[1][3], "4. INSANE - 0.40s Reaction Time w/ 5 Colors");	
+	strcpy (menu[1][3], "4. INSANE - 0.40s Reaction Time w/ 5 Colors");
 	
+	strcpy (menu[2][0], "Play");
+	strcpy (menu[2][1], "Help");
+	strcpy (menu[2][2], "High Score");
+	strcpy (menu[2][3], "Exit");
+	strcpy (menu[2][4], "Exit");
 
 
 	while(selected_menu == -2){
