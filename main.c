@@ -14,7 +14,7 @@ void print_highscore(); // print scores
 
 int main(){
 	char nama[32];
-    int score;
+    int score = 0;
 	
 	srand(time(NULL));// set seed untuk randomize game
     
@@ -28,8 +28,8 @@ int main(){
     			scanf("%s", nama);
     			printf ("\n---------------------------------------------------------------------------------------------------\n");
     			score = game();	// play the game	
-    			store_highscore(score,nama); // store highscore
-    			print_highscore();
+    			store_highscore(score, nama); // store highscore
+    			sort_score();
     			break;
     		
     		case 1:// help
@@ -75,7 +75,7 @@ void sort_score(){
 		exit(0);
 	}
 	
-    FILE *file_summary = fopen("sorted.txt", "w");
+    FILE *file_summary = fopen("sorted.txt", "w+");
     if(file_summary == NULL){
     	printf("Cannot open sorted.txt \n");
 		exit(0);

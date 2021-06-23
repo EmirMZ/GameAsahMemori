@@ -53,8 +53,11 @@ int game(){
 	FILE *fp = fopen("sorted.txt", "r");
 	if (fp == NULL)
     {
-		printf("Cannot open sorted.txt \n");
-		exit(0);
+    	fp = fopen("sorted.txt", "w+");
+    	if (fp == NULL){
+			printf("Cannot open sorted.txt \n");
+			exit(0);
+		}
     }
 	fgets(highest_score_in_file, 30, fp);
 	fclose(fp);
@@ -177,7 +180,6 @@ void play(int difficulty, int num_of_colors, int reaction_time, int *score, int 
 		system("cls");
 		
 		color_flash(round_flashes, num_of_colors, reaction_time); // Start flashing
-		display_answer(); // Display the correct answer
 		concatenate(answer); // Concatenate answer in queue and store it answer array
 		input_and_check_answer(input_answer, answer, &status,round_flashes); // Make the player input their answer and check it
 		
