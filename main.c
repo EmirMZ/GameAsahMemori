@@ -5,15 +5,17 @@
 #include "menu.h"
 #include "game.h"
 #include "help.h"
+#include <time.h>
 
 int store_highscore(int score, char nama[32]);
 void sort_score(); // in a decreasing order
+void print_highscore();
 
 int main(){
 	char nama[32];
     int i,j,size,score,exit_status = -1;
 	char str[60];
-
+	srand(time(NULL));
     while(exit_status == -1){
     	switch(menu(0)){
     		case 0:
@@ -23,7 +25,7 @@ int main(){
     			fflush(stdin);
     			scanf("%s", nama);
     			printf ("\n---------------------------------------------------------------------------------------------------\n");
-    			score = game();		
+    			score = rand() % 4500; // game();		
     			store_highscore(score,nama);
     			sort_score();
     			break;
@@ -34,7 +36,8 @@ int main(){
     		
     		case 2:
     			system("cls");
-    			store_highscore(score,nama);
+    			print_highscore();
+    			getchar();
     			break;
     		
     		case 3:
@@ -45,81 +48,18 @@ int main(){
 	}
 }
 
-int store_highscore(int score, char nama[32]){
-	
-	char *filename = "program.txt"; 
-	char nama_database[10][32]; 	
-	char nama_database_temp[32];	
-	char ch; 						
-	int score_database[10]; 		
-	int score_database_temp;		
-	
-	FILE *fp;	
-
-	int overwrite_status = 0; 
-	int i = 0,j,size; 
-	
-	fp = fopen(filename, "r");  
-    if (fp == NULL) 
-    {
-    	fp = fopen(filename, "w+");
-    	if(fp == NULL){
-    	printf("Error: could not open file %s", filename);
-        getch();
-        return 1;
-		}
-        
-    }
-	//fseek( fp, 0, SEEK_SET );
-	
-	while (ch != EOF){ 
-		fscanf(fp,"%d%s", &score_database[i], nama_database[i]);
-		ch = fgetc(fp); 
-		i++;
+int store_highscore(int score, char *nama){
+	FILE *fp = fopen("program.txt", "a");
+	if (fp == NULL)
+	{
+	    printf("Error opening file!\n");
+	    exit(1);
 	}
-	
-	size = i - 1 ;
-	for(i = 0;i < size;i++){
-		if(strcmp(nama_database[i],nama) == 0){
-			strcpy(nama_database[i],nama);
-			score_database[i] = score;
-			overwrite_status = 1;
-			size--;	
-		}
-	}
-	
-	if(overwrite_status == 0){
-		strcpy(nama_database[size],nama);
-		score_database[size] = score;	
-	}
-	
-	for (i = 0; i < size ; ++i) 
-        {
-            for (j = i + 1; j < size - i ; ++j) 
-            {
-                if (score_database[i] < score_database[i + 1]) 
-                {
-                	strcpy (nama_database[i], nama_database[i + 1]);
-                    score_database_temp = score_database[i];
-                    score_database[i] = score_database[i+1];
-                    score_database[i+1] = score_database_temp;
-                }
-            }
-        }
-
-	fp = fopen(filename, "w");
+	fprintf(fp, "%d %s\n", score, nama);
+	fclose(fp);
 	scoreBanner();
-	for(i = 0;i <= size ;++i){
-		
-		fprintf(fp,"%d %s\n", score_database[i], nama_database[i]);
-	}
 	footer();
 	prompt();
-	fclose(fp);	
-
-	// getch();
-	
-	//memset(high_score, 0, sizeof(high_score));
 }
 
 void sort_score(){
@@ -170,4 +110,24 @@ void sort_score(){
     free(data);
     fclose(p_file_log);
     fclose(p_Summary);
+}
+
+void print_highscore(){
+    char c;
+    FILE *fp = fopen("sorted.txt", "r");
+    if (fp == NULL)
+    {
+		printf("Cannot open file \n");
+		exit(0);
+    }
+  
+    // Read contents from file
+    c = fgetc(fp);
+    while (c != EOF)
+    {
+		printf ("%c", c);
+		c = fgetc(fp);
+    }
+  
+    fclose(fp);
 }
