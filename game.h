@@ -47,7 +47,7 @@ int game(){
     */
     
     srand(time(NULL));
-	int score = 0, highscore, score_multiplier, difficulty, num_of_colors, reaction_time;
+	int i, score = 0, highscore = 0, hs, score_multiplier, difficulty, num_of_colors, reaction_time;
 	
 	char highest_score_in_file[30];
 	FILE *fp = fopen("sorted.txt", "r");
@@ -59,15 +59,22 @@ int game(){
 	fgets(highest_score_in_file, 30, fp);
 	fclose(fp);
 	
-	struct score_tracking record;
-	record.current_score = &score;
-	record.highest_score = atoi(highest_score_in_file);
+	hs = atoi(highest_score_in_file); // Store highest score in file in hs
 	
 	// Call menu to display the difficulties and ask the player to select it
 	difficulty = menu(1) + 1;
 
 	printf ("\n---------------------------------------------------------------------------------------------------\n");
 	system("cls");
+	
+	#pragma omp parallel for schedule(static) reduction (+ : highscore) // Iterate each thread to sum highscore until the same as highscore
+	for(i = 0; i < hs; i++){
+		highscore += 1;
+	}
+	
+	struct score_tracking record;
+	record.current_score = &score;
+	record.highest_score = highscore;
 	
     // Setting up game by the selected difficulty
     game_difficulty(difficulty, &num_of_colors, &reaction_time, &score_multiplier);
@@ -154,8 +161,10 @@ void play(int difficulty, int num_of_colors, int reaction_time, int *score, int 
 			#pragma omp parallel
 			{
 				printf("\n\t\t     CONGRATS ON PASSING LEVEL %d !!! - FROM THREAD %d OF %d", round_counter - 1, omp_get_thread_num(), omp_get_num_threads());
+				#pragma omp barrier
+				#pragma omp critical
+				printf("\n\t\t\t            Keep up the good work !!\n");
 			}
-			printf("\n\t\t\t            Keep up the good work !!\n");
 			check_jingle();
 		}
 		score_tracker(record); // Tell the player how they are doing on score
@@ -171,8 +180,13 @@ void play(int difficulty, int num_of_colors, int reaction_time, int *score, int 
 		display_answer(); // Display the correct answer
 		concatenate(answer); // Concatenate answer in queue and store it answer array
 		input_and_check_answer(input_answer, answer, &status,round_flashes); // Make the player input their answer and check it
-		#pragma omp single
-		*score += round_flashes * *score_multiplier * status; // A pragma omp single directive to calculate the score
+		
+		#pragma omp single nowait
+		{
+			#pragma omp task
+			*score += round_flashes * *score_multiplier * status;
+		}
+		#pragma omp taskwait
 		round_counter++;
 		round_flashes++;
 		system("cls");
@@ -191,7 +205,7 @@ void input_and_check_answer(char input_answer[60], char answer[60], int *status,
 		input_answer[i] = character_answer; // Assign character_answer to each input_answer element
 	}
 	
-	printf("%s\n", input_answer);
+	printf("Your answer: %s\n", input_answer);
 	display_answer();
 	getchar();
 	
