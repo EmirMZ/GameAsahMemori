@@ -114,6 +114,7 @@ void sort_score(){
 
 void print_highscore(){
     char c;
+    int i = 0;
     FILE *fp = fopen("sorted.txt", "r");
     if (fp == NULL)
     {
@@ -125,8 +126,17 @@ void print_highscore(){
     c = fgetc(fp);
     while (c != EOF)
     {
-		printf ("%c", c);
+    	
+    	printf ("%c", c);
 		c = fgetc(fp);
+		
+		if(c == '\n'){
+			i++;
+		}
+		if(i == 10){
+			c = EOF;
+		}
+
     }
   
     fclose(fp);
