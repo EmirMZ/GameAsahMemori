@@ -29,7 +29,7 @@ int main(){
     			printf ("\n---------------------------------------------------------------------------------------------------\n");
     			score = game();	// play the game	
     			store_highscore(score,nama); // store highscore
-    			sort_score();
+    			print_highscore();
     			break;
     		
     		case 1:// help
@@ -60,8 +60,6 @@ int store_highscore(int score, char *nama){
 	
 	fprintf(fp, "%d %s\n", score, nama); //store value to program.txt
 	fclose(fp);// close fp
-	scoreBanner();// show banner and whatnot
-	footer();
 	prompt();
 }
 
@@ -133,14 +131,14 @@ void print_highscore(){
 		printf("Cannot open sorted.txt \n");
 		exit(0);
     }
-    printf("\t\t\t\t\t LEADERBOARD\n");
-    
+    scoreBanner();
+    printf("\n");
     // Read each line and store it in ch array
     while(fgets(ch, 50, fp) != NULL) {
-	    printf("\t\t\t\t\t  %d. %s", linecount + 1, ch); // Print the sorted score
+	    printf("\t\t\t  %d. %s", linecount + 1, ch); // Print the sorted score
 	    if (++linecount == 10) break; // Stop printing after 10 scores
 	}
-	
+	footer();
     fclose(fp);
     prompt();
 }

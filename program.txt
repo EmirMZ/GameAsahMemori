@@ -20,3 +20,6 @@
 259 i
 164 o
 0 1
+0 andin
+0 andinda
+60 asad
