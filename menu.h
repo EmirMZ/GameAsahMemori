@@ -3,6 +3,7 @@
 #include <strings.h>
 #include <windows.h>
 #include <omp.h>
+#include "banner.h"
 
 
 void red () {
@@ -87,6 +88,7 @@ int menu(int menu_select){//menu apa yang ingin ditampilkan
 
 	while(selected_menu == -2){
 		system("cls");
+		header();
 		menuMain(selection,menu_select,menu_limit[menu_select],menu);
 
     	switch(getch()){

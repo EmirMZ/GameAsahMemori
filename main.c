@@ -23,7 +23,7 @@ int main(){
     			fflush(stdin);
     			scanf("%s", nama);
     			printf ("\n---------------------------------------------------------------------------------------------------\n");
-    			score = game();
+    			score = game();		
     			store_highscore(score,nama);
     			sort_score();
     			break;
@@ -33,21 +33,16 @@ int main(){
     			break;
     		
     		case 2:
-    			
+    			system("cls");
+    			store_highscore(score,nama);
     			break;
     		
     		case 3:
+    			exitBanner();
     			exit_status = 1;
-    			break;
-    			
+    			break;	
 		}
 	}
-
-
-	
-
-    
-
 }
 
 int store_highscore(int score, char nama[32]){
@@ -113,11 +108,13 @@ int store_highscore(int score, char nama[32]){
         }
 
 	fp = fopen(filename, "w");
+	scoreBanner();
 	for(i = 0;i <= size ;++i){
 		
 		fprintf(fp,"%d %s\n", score_database[i], nama_database[i]);
 	}
-	
+	footer();
+	prompt();
 	fclose(fp);	
 
 	// getch();
