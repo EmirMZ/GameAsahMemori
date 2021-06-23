@@ -10,7 +10,7 @@ GameAsahMemori adalah program yang bertujuan untuk memperkuat ingatan sang pemai
 * Difficulty: merasa susah, atau merasa terlalu gampang? tenang, ada opsi EASY, NORMAL, HARD, dan INSANE. cocok untuk pemain pemula, dan pemain pro. difficulty juga akan meningkat seiring lamanya bermain.
 * Penjelasan: Kita telah membuat penjelasan source code kita, Silahkan [klik disini](https://drive.google.com/file/d/1sxSALIPXlTN8o0YOUnJF4IgbfKbM1teB/view).
 
-*Limitasi: nama harus bersifat username, yaitu tanpa spasi. jika ada spasi, program tidak akan menerima jawaban dengan benar
+*Limitasi: nama harus bersifat username, yaitu tanpa spasi. jika ada spasi, program tidak akan menerima jawaban dengan benar.
 
 library yang diperlukan adalah libgomp_64-1.dll, yang tersedia dalam SDK-nya MINGW64. Jika merasa tidak aman download dari sini, silahkan [klik disini](https://sourceforge.net/projects/mingw-w64/) untuk men-download SDK-nya dari sourceforge MINGW64 (atau langsung compile dari DevC++)
 
