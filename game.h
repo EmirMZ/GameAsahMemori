@@ -7,7 +7,7 @@
 #include "queue.h"
 #include "soundtracks.h"
 #include "colors.h"
-#define MAX_LEN 100 // Length of each line in input file.
+
 
 typedef struct score_tracking{
 	int *current_score;
