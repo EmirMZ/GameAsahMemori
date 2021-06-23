@@ -128,17 +128,19 @@ void print_highscore(){
     FILE *fp = fopen("sorted.txt", "r");
     if (fp == NULL)
     {
-		printf("Cannot open sorted.txt \n");
-		exit(0);
-    }
-    scoreBanner();
-    printf("\n");
-    // Read each line and store it in ch array
-    while(fgets(ch, 50, fp) != NULL) {
+		printf("Cannot open sorted.txt, have you not play the game yet? \n");
+		prompt();
+    }else{
+    	scoreBanner();
+    	printf("\n");
+    	// Read each line and store it in ch array
+   	 	while(fgets(ch, 50, fp) != NULL) {
 	    printf("\t\t\t  %d. %s", linecount + 1, ch); // Print the sorted score
 	    if (++linecount == 10) break; // Stop printing after 10 scores
 	}
-	footer();
-    fclose(fp);
-    prompt();
+		footer();
+    	fclose(fp);
+    	prompt();	
+	}
+
 }
