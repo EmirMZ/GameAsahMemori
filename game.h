@@ -8,20 +8,20 @@
 #include "soundtracks.h"
 #include "colors.h"
 
-
+// A struct to keep track of the player score
 typedef struct score_tracking{
 	int *current_score;
 	int highest_score;
 } st;
 
-void score_tracker(st record);
-void play(int difficulty, int num_of_colors, int reaction_time, int *score, int *score_multiplier, st record);
-void input_and_check_answer(char input_answer[60], char answer[60], int *status,int round_flashes);
-void game_difficulty(int difficulty, int *num_of_colors, int *reaction_time, int *score_multiplier);
-void color_flash(int round_flashes, int num_of_colors, int reaction_time);
-void concatenate(char answer[60]);
-void display_score(int *score);
-void prompt();
+void play(int difficulty, int num_of_colors, int reaction_time, int *score, int *score_multiplier, st record); // The gameplay resides here
+void input_and_check_answer(char input_answer[60], char answer[60], int *status,int round_flashes); // Check player's answer to the game's answer
+void game_difficulty(int difficulty, int *num_of_colors, int *reaction_time, int *score_multiplier); // Set up game based on the selected difficulty
+void color_flash(int round_flashes, int num_of_colors, int reaction_time); // Color flashing function to.., well.., flash colors
+void concatenate(char answer[60]); // Concatenate answers stored in queue to a string
+void display_score(int *score); // Display the player's current score
+void score_tracker(st record); // A score tracking function to.., well.., track the player's score
+void prompt(); // A prompt to the user to press the required key to continue
 
 int game(){
     /*
@@ -49,48 +49,37 @@ int game(){
     srand(time(NULL));
 	int score = 0, highscore, score_multiplier, difficulty, num_of_colors, reaction_time;
 	
-	FILE *fp;
-	const char *filename = "program.txt"; 
 	char highest_score_in_file[30];
-	fp = fopen(filename, "r");
+	FILE *fp = fopen("sorted.txt", "r");
+	if (fp == NULL)
+    {
+		printf("Cannot open sorted.txt \n");
+		exit(0);
+    }
 	fgets(highest_score_in_file, 30, fp);
 	fclose(fp);
 	
 	struct score_tracking record;
 	record.current_score = &score;
 	record.highest_score = atoi(highest_score_in_file);
-	// record.highest_score = 
 	
-	
-	/*
-	printf("\n\t\t\t                Choose the Difficulty \n");
-    printf("\t\t\t     1. EASY - 1.24s Reaction Time w/ 3 Colors\n");
-    printf("\t\t\t     2. NORMAL - 0.98s Reaction Time w/ 4 Colors\n");
-    printf("\t\t\t     3. HARD - 0.68s Reaction Time w/ 4 Colors\n");
-    printf("\t\t\t     4. INSANE - 0.40s Reaction Time w/ 5 Colors");
-	
-    // ERROR HANDLING
-	do{
-		printf("\n\t\t\t                 Submit here : ");
-	    scanf("%d", &difficulty);
-	}while(difficulty < 1 || difficulty > 4);
-	*/
-	
+	// Call menu to display the difficulties and ask the player to select it
 	difficulty = menu(1) + 1;
 
 	printf ("\n---------------------------------------------------------------------------------------------------\n");
 	system("cls");
 	
-    // SETTING UP GAME BY THE SELECTED DIFFICULTY
+    // Setting up game by the selected difficulty
     game_difficulty(difficulty, &num_of_colors, &reaction_time, &score_multiplier);
 	
-    // COMMENCING GAME
+    // Commencing game
     play(difficulty, num_of_colors, reaction_time, &score, &score_multiplier, record);
     
     return score;
 }
 
 void game_difficulty(int difficulty, int *num_of_colors, int *reaction_time, int *score_multiplier){
+	// Number of colors, reaction time, and score multiplier vary depending on the difficulty
 	switch(difficulty){
     	case 1:
     		*num_of_colors = 3;
@@ -118,29 +107,29 @@ void game_difficulty(int difficulty, int *num_of_colors, int *reaction_time, int
 void color_flash(int round_flashes, int num_of_colors, int reaction_time){
 	int prev_color = -1, current_color = -1;	
 	
-	// RANDOMIZE COLOR WITHOUT USING PARALLEL PROGRAMMING
 	do{
+		// Do not have a repeated color flashing
 		while(prev_color == current_color)
 			current_color = rand() % num_of_colors;
-	
+		
 		prev_color = current_color;
-		add_answer(current_color);
+		add_answer(current_color); // Add the current color to the answer queue
 		
 		// COLOR FLASH TIME !!
 		switch(current_color){
-			case 0: //BLUE
+			case 0: // Blue
 				blue_flash(reaction_time);
 				break;
-			case 1: // GREEN
+			case 1: // Green
 				green_flash(reaction_time);
 				break;
-			case 2: // AQUA
+			case 2: // Aqua
 				aqua_flash(reaction_time);
 				break;
-			case 3: // RED
+			case 3: // Red
 				red_flash(reaction_time);
 				break;
-			case 4: // PURPLE
+			case 4: // Purple
 				purple_flash(reaction_time);
 				break;	
 		}
@@ -149,7 +138,7 @@ void color_flash(int round_flashes, int num_of_colors, int reaction_time){
 }
 
 void play(int difficulty, int num_of_colors, int reaction_time, int *score, int *score_multiplier, st record){
-	int i, round_flashes = 3, round_counter = 1, status = 1; // <- GAME'S STATUS (CORRECT GUESS OR WRONG GUESS)
+	int i, round_flashes = 3, round_counter = 1, status = 1; // <- Game's status (correct guess or wrong guess)
 	char diff[6], answer[60], input_answer[60];
 	
 	if(difficulty == 1) strcpy(diff, "EASY");
@@ -157,11 +146,11 @@ void play(int difficulty, int num_of_colors, int reaction_time, int *score, int 
 	else if(difficulty == 3) strcpy(diff, "HARD");
 	else if(difficulty == 4) strcpy(diff, "INSANE");
 	
-	// STATE OF PLAY
+	// State of play
 	while(status == 1){
-		system("color 06"); // BLACK BACKGROUND YELLOW FOREGROUND
+		system("color 06"); // Black background yellow foreground
 		display_score(score);
-		if(round_counter % 6 == 0){
+		if(round_counter % 6 == 0){ // Every 6 rounds, player gets a congrats message from the program. How nice!
 			#pragma omp parallel
 			{
 				printf("\n\t\t     CONGRATS ON PASSING LEVEL %d !!! - FROM THREAD %d OF %d", round_counter - 1, omp_get_thread_num(), omp_get_num_threads());
@@ -169,21 +158,21 @@ void play(int difficulty, int num_of_colors, int reaction_time, int *score, int 
 			printf("\n\t\t\t            Keep up the good work !!\n");
 			check_jingle();
 		}
-		score_tracker(record);
+		score_tracker(record); // Tell the player how they are doing on score
 		printf("\t  ------------------------------------------------------------\n");
 		printf("\n\t\t\t\t     ** ROUND %d - %s **\n", round_counter, diff);
 		printf("\t\t\t\t         %d Flashes\n", round_flashes);
 		printf("\n\t\t  ------------------------------------------------------------");
-
 		prompt();
 		
 		system("cls");
-		color_flash(round_flashes, num_of_colors, reaction_time);
-		display_answer();
-		concatenate(answer);
-		input_and_check_answer(input_answer, answer, &status,round_flashes);
+		
+		color_flash(round_flashes, num_of_colors, reaction_time); // Start flashing
+		display_answer(); // Display the correct answer
+		concatenate(answer); // Concatenate answer in queue and store it answer array
+		input_and_check_answer(input_answer, answer, &status,round_flashes); // Make the player input their answer and check it
 		#pragma omp single
-		*score += round_flashes * *score_multiplier * status;
+		*score += round_flashes * *score_multiplier * status; // A pragma omp single directive to calculate the score
 		round_counter++;
 		round_flashes++;
 		system("cls");
@@ -192,26 +181,27 @@ void play(int difficulty, int num_of_colors, int reaction_time, int *score, int 
 
 void input_and_check_answer(char input_answer[60], char answer[60], int *status,int round_flashes){
 	int i;
-	char character_answer;
+	char character_answer; // char to store each player answer input
 	
 	system("color 06");
 	printf("\t\t  ------------------------------------------------------------");
+	// Iteration to assign character_answer to each input_answer element
 	for(i = 0; i < round_flashes;i++){
-		character_answer = menu(2) + '0';
-		input_answer[i] = character_answer;
+		character_answer = menu(2) + '0'; // Assign char by calling menu
+		input_answer[i] = character_answer; // Assign character_answer to each input_answer element
 	}
 	
 	printf("%s\n", input_answer);
 	display_answer();
-	getch();
+	getchar();
 	
-	if (strcmp(input_answer, answer) == 0){
+	if (strcmp(input_answer, answer) == 0){ // If the player's answer is correct, then...
 		printf("\n\n\t\t  ------------------------------------------------------------");
 		printf("\n\t\t\t      Correct! Get ready for the next round");
 		correct_jingle();
 		printf("\n\t\t  ------------------------------------------------------------");
 		prompt();		
-	}else{
+	}else{ // If the player's answer is wrong, then...
 		printf("\n\n\t\t  ------------------------------------------------------------");
 		printf ("\n\t\t\t                    Wrong!");
 		wrong_jingle();
@@ -219,21 +209,22 @@ void input_and_check_answer(char input_answer[60], char answer[60], int *status,
 		printf("\n\t\t  ------------------------------------------------------------");
 		prompt();
 		system("cls");
-		*status = 0;
+		*status = 0; // Change status to 0 so the program stops playing
 	}
-	free_answer();
+	free_answer(); // Free the program's answer for the next add_answer() call
 }
 
 void concatenate(char answer[60]){
 	Node *var = rear;
-	char s1[30], s2[30];
+	char s1[30], s2[30]; // Two arrays to store each answer and concatenate the latter to the former
+	
 	if(var != NULL){
-		sprintf(s1, "%d", var->answer);
+		sprintf(s1, "%d", var->answer); // Change int in var->answer to string to s1
 		while(var->next != NULL){
-			sprintf(s2, "%d", var->next->answer);
-			strcat(s1, s2);
-			strcpy(answer, s1);
-			var = var->next;
+			sprintf(s2, "%d", var->next->answer); // Change int in var->next->answer to string to s2
+			strcat(s1, s2); // Concatenate s2 to s1
+			strcpy(answer, s1); // Copy s1 to answer
+			var = var->next; // Point to the next answer in queue
 		}
 	}	
 }
