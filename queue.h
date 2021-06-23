@@ -34,6 +34,7 @@ void add_answer(int random_answer){
 }
 
 void display_answer(){
+	printf("Key: ");
     Node *var = rear;
     if(var != NULL){
         while(var != NULL){
