@@ -92,12 +92,12 @@ int menu(int menu_select){//menu apa yang ingin ditampilkan
 		menuMain(selection,menu_select,menu_limit[menu_select],menu);
 
     	switch(getch()){
-			case 224: // anon
+			case 224: // Escape key khusus arrow
 				switch(getch()){
 					case 72: // Up Arrow
 						selection --;
 						break;
-					case 80: // Up Arrow
+					case 80: // Down Arrow
 						selection ++;
 						break;
 				}
